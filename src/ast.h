@@ -20,7 +20,7 @@ struct ASTNode
     std::weak_ptr<ASTNode> parent;
     std::vector<std::shared_ptr<ASTNode>> children;
 
-    bool isLeaf();
+    bool isLeaf() const;
     void addChild(std::shared_ptr<ASTNode> child);
     friend std::ostream &operator<<(std::ostream &os, const ASTNode &node);
 };
@@ -30,11 +30,12 @@ class AST
 public:
     static std::shared_ptr<AST> createAST(std::vector<std::string> tokens);
     AST();
-    bool isEmpty();
-    void printAST();
+    bool isEmpty() const;
+    void printAST() const;
+    friend std::ostream &operator<<(std::ostream &os, const AST &ast);
 
 private:
-    void preOrder(std::shared_ptr<ASTNode> node, int level);
+    void preOrder(std::shared_ptr<ASTNode> node, int level, std::ostream &os) const;
 
     std::shared_ptr<ASTNode> root;
     int size;

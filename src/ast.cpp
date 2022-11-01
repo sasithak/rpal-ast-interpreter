@@ -47,7 +47,7 @@ pair<Type, string> getType(string str, int level)
     }
 }
 
-bool ASTNode::isLeaf()
+bool ASTNode::isLeaf() const
 {
     return children.size() == 0;
 }
@@ -145,12 +145,12 @@ AST::AST()
     size = 0;
 }
 
-bool AST::isEmpty()
+bool AST::isEmpty() const
 {
     return size == 0;
 }
 
-void AST::preOrder(shared_ptr<ASTNode> node, int level)
+void AST::preOrder(shared_ptr<ASTNode> node, int level, ostream &os) const
 {
     if (node == nullptr)
     {
@@ -159,24 +159,30 @@ void AST::preOrder(shared_ptr<ASTNode> node, int level)
 
     for (int i = 0; i < level; i++)
     {
-        cout << ".";
+        os << ".";
     }
 
-    cout << *node << endl;
+    os << *node << endl;
 
     for (int i = 0; i < (int)node->children.size(); i++)
     {
-        preOrder(node->children[i], level + 1);
+        preOrder(node->children[i], level + 1, os);
     }
 }
 
-void AST::printAST()
+ostream &operator<<(ostream &os, const AST &ast)
 {
-    if (root == nullptr)
+    if (ast.root == nullptr)
     {
-        cout << "Error: AST is empty" << endl;
-        return;
+        os << "Error: AST is empty" << endl;
+        return os;
     }
 
-    preOrder(root, 0);
+    ast.preOrder(ast.root, 0, os);
+    return os;
+}
+
+void AST::printAST() const
+{
+    cout << *this;
 }
