@@ -4,7 +4,8 @@
 
 using namespace std;
 
-ST::ST(std::shared_ptr<AST> ast)
+shared_ptr<ST> AST::standardize()
 {
-    root = nullptr;
+    cout << "Standardizing..." << endl;
+    return nullptr;
 }

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include "st.h"
 
 enum Type
 {
@@ -32,6 +33,7 @@ public:
     AST();
     bool isEmpty() const;
     void printAST() const;
+    std::shared_ptr<ST> standardize();
     friend std::ostream &operator<<(std::ostream &os, const AST &ast);
 
 private:

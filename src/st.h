@@ -7,9 +7,9 @@
 class ST
 {
 public:
-    ST(std::shared_ptr<AST> ast);
+    ST(std::shared_ptr<STNode> root);
     void execute();
 
 private:
-    STNode *root;
+    std::shared_ptr<STNode> root;
 };
