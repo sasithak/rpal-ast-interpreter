@@ -1,7 +1,9 @@
+#ifndef ST_H
+#define ST_H
+
 #include <iostream>
 #include <memory>
 #include <vector>
-#include "ast.h"
 #include "st_types.h"
 
 class ST
@@ -13,3 +15,5 @@ public:
 private:
     std::shared_ptr<STNode> root;
 };
+
+#endif // ST_H
