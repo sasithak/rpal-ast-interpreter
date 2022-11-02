@@ -210,5 +210,28 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
         return eq;
     }
 
+    if (this->value == "within")
+    {
+        auto children_1 = children[0]->getChildren();
+        auto x_1 = children_1[0];
+        auto e_1 = children_1[1];
+
+        auto children_2 = children[1]->getChildren();
+        auto x_2 = children_2[0];
+        auto e_2 = children_2[1];
+
+        shared_ptr<Equal> eq = make_shared<Equal>();
+        shared_ptr<Gamma> g = make_shared<Gamma>();
+        shared_ptr<Lambda> l = make_shared<Lambda>();
+
+        bind_lambda(l, x_1, e_2);
+        g->addChild(l);
+        g->addChild(e_1);
+        eq->addChild(x_2);
+        eq->addChild(g);
+
+        return eq;
+    }
+
     return nullptr;
 }
