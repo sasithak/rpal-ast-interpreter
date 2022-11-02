@@ -10,6 +10,18 @@ string trim(const string &str);
 
 int main(int argc, char *argv[])
 {
+    if (argc < 2)
+    {
+        cerr << "No input file specified" << endl;
+        return 1;
+    }
+
+    if (argc > 2)
+    {
+        cerr << "Too many arguments" << endl;
+        return 1;
+    }
+
     string filename(argv[1]);
     vector<string> tokens = getTokens(filename);
     shared_ptr<AST> ast = AST::createAST(tokens);
