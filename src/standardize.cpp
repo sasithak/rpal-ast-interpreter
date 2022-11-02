@@ -23,7 +23,16 @@ shared_ptr<STNode> AST::postOrder(shared_ptr<ASTNode> node, int level) const
     vector<shared_ptr<STNode>> children;
     for (auto child : node->children)
     {
-        children.push_back(postOrder(child, level + 1));
+        auto childNode = postOrder(child, level + 1);
+
+        if (childNode->toString() != "arrow")
+        {
+            children.push_back(childNode);
+        }
+        else
+        {
+            children.insert(children.end(), childNode->getChildren().begin(), childNode->getChildren().end());
+        }
     }
 
     return node->standardize(children);
@@ -66,6 +75,16 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
         {
             return make_shared<BinaryOperator>(this->value, children[0], children[1]);
         }
+    }
+
+    if (this->value == "->")
+    {
+        vector<shared_ptr<STNode>> newChildren;
+        newChildren.push_back(make_shared<Delta>(children[1]));
+        newChildren.push_back(make_shared<Delta>(children[2]));
+        newChildren.push_back(make_shared<Beta>());
+        newChildren.push_back(children[0]);
+        return make_shared<Arrow>(newChildren);
     }
 
     if (this->value == "tau")

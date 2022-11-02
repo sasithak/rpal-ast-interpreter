@@ -312,3 +312,38 @@ string Tau::toString() const
 {
     return "tau " + to_string(n);
 }
+
+Delta::Delta(shared_ptr<STNode> child)
+{
+    this->addChild(child);
+}
+
+Delta::Delta(int n, shared_ptr<STNode> child)
+{
+    this->n = n;
+    this->addChild(child);
+}
+
+string Delta::toString() const
+{
+    return "delta";
+}
+
+void Delta::setN(int n)
+{
+    this->n = n;
+}
+
+int Delta::getN() const
+{
+    return n;
+}
+
+Beta::Beta()
+{
+}
+
+string Beta::toString() const
+{
+    return "beta";
+}

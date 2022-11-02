@@ -155,4 +155,31 @@ private:
     int n;
 };
 
+class Arrow : public STNode
+{
+public:
+    Arrow(std::vector<std::shared_ptr<STNode>> children);
+    std::string toString() const;
+};
+
+class Delta : public STNode
+{
+public:
+    Delta(std::shared_ptr<STNode> child);
+    Delta(int n, std::shared_ptr<STNode> child);
+    std::string toString() const;
+    void setN(int n);
+    int getN() const;
+
+private:
+    int n;
+};
+
+class Beta : public STNode
+{
+public:
+    Beta();
+    std::string toString() const;
+};
+
 #endif // ST_TYPES_H
