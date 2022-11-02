@@ -298,3 +298,17 @@ string Lambda::toString() const
 {
     return "lambda";
 }
+
+Tau::Tau(vector<shared_ptr<STNode>> children)
+{
+    n = children.size();
+    for (int i = 0; i < n; ++i)
+    {
+        this->addChild(children[i]);
+    }
+}
+
+string Tau::toString() const
+{
+    return "tau " + to_string(n);
+}

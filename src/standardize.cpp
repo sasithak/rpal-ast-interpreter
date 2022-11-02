@@ -68,5 +68,10 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
         }
     }
 
+    if (this->value == "tau")
+    {
+        return make_shared<Tau>(children);
+    }
+
     return nullptr;
 }

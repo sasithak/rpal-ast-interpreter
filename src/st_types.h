@@ -8,7 +8,7 @@
 class STNode
 {
 public:
-    void addChild(shared_ptr<STNode> child);
+    void addChild(std::shared_ptr<STNode> child);
     std::vector<std::shared_ptr<STNode>> getChildren();
     virtual std::string toString() const = 0;
 
@@ -143,6 +143,16 @@ class Lambda : public STNode
 public:
     Lambda();
     std::string toString() const;
+};
+
+class Tau : public STNode
+{
+public:
+    Tau(std::vector<std::shared_ptr<STNode>> children);
+    std::string toString() const;
+
+private:
+    int n;
 };
 
 #endif // ST_TYPES_H
