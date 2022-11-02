@@ -203,4 +203,11 @@ public:
     std::string toString() const;
 };
 
+class YStar : public STNode
+{
+public:
+    YStar();
+    std::string toString() const;
+};
+
 #endif // ST_TYPES_H

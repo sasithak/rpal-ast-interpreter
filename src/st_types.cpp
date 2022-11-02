@@ -396,3 +396,12 @@ string Comma::toString() const
 {
     return ",";
 }
+
+YStar::YStar()
+{
+}
+
+string YStar::toString() const
+{
+    return "Y";
+}

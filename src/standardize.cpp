@@ -190,5 +190,25 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
         return g_1;
     }
 
+    if (this->value == "rec")
+    {
+        auto child_children = children[0]->getChildren();
+        auto x = child_children[0];
+        auto e = child_children[1];
+
+        shared_ptr<Equal> eq = make_shared<Equal>();
+        shared_ptr<Gamma> g = make_shared<Gamma>();
+        shared_ptr<Lambda> l = make_shared<Lambda>();
+        shared_ptr<YStar> y = make_shared<YStar>();
+
+        bind_lambda(l, x, e);
+        g->addChild(y);
+        g->addChild(l);
+        eq->addChild(x);
+        eq->addChild(g);
+
+        return eq;
+    }
+
     return nullptr;
 }
