@@ -143,6 +143,13 @@ class Lambda : public STNode
 public:
     Lambda();
     std::string toString() const;
+    int getBindingCount() const;
+    std::vector<std::shared_ptr<Identifier>> getBindings() const;
+    void addBinding(std::shared_ptr<Identifier> binding);
+
+private:
+    int bindingCount;
+    std::vector<std::shared_ptr<Identifier>> bindings;
 };
 
 class Tau : public STNode
@@ -179,6 +186,13 @@ class Beta : public STNode
 {
 public:
     Beta();
+    std::string toString() const;
+};
+
+class Equal : public STNode
+{
+public:
+    Equal();
     std::string toString() const;
 };
 

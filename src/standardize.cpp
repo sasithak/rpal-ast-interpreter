@@ -61,6 +61,8 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
         return make_shared<TruthValue>(false);
     }
 
+    // Custom standardizations as in CSE Machine rules
+
     for (int i = 0; i < 2; i++)
     {
         if (this->value == unaryOperators[i])
@@ -90,6 +92,25 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
     if (this->value == "tau")
     {
         return make_shared<Tau>(children);
+    }
+
+    if (this->value == "fcn_form")
+    {
+        int childrenCnt = children.size();
+        auto p = children[0];
+        auto e = children[childrenCnt - 1];
+
+        shared_ptr<Lambda> l = make_shared<Lambda>();
+        l->addChild(e);
+        for (int i = 1; i < childrenCnt - 1; ++i)
+        {
+            l->addBinding(dynamic_pointer_cast<Identifier>(children[i]));
+        }
+
+        shared_ptr<Equal> eq = make_shared<Equal>();
+        eq->addChild(p);
+        eq->addChild(l);
+        return eq;
     }
 
     return nullptr;

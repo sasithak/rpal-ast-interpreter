@@ -292,11 +292,28 @@ string Gamma::toString() const
 
 Lambda::Lambda()
 {
+    this->bindingCount = 0;
 }
 
 string Lambda::toString() const
 {
     return "lambda";
+}
+
+int Lambda::getBindingCount() const
+{
+    return bindingCount;
+}
+
+vector<shared_ptr<Identifier>> Lambda::getBindings() const
+{
+    return bindings;
+}
+
+void Lambda::addBinding(shared_ptr<Identifier> binding)
+{
+    bindings.push_back(binding);
+    ++bindingCount;
 }
 
 Tau::Tau(vector<shared_ptr<STNode>> children)
@@ -311,6 +328,20 @@ Tau::Tau(vector<shared_ptr<STNode>> children)
 string Tau::toString() const
 {
     return "tau " + to_string(n);
+}
+
+Arrow::Arrow(vector<shared_ptr<STNode>> children)
+{
+    int n = children.size();
+    for (int i = 0; i < n; ++i)
+    {
+        this->addChild(children[i]);
+    }
+}
+
+string Arrow::toString() const
+{
+    return "->";
 }
 
 Delta::Delta(shared_ptr<STNode> child)
@@ -346,4 +377,13 @@ Beta::Beta()
 string Beta::toString() const
 {
     return "beta";
+}
+
+Equal::Equal()
+{
+}
+
+string Equal::toString() const
+{
+    return "=";
 }
