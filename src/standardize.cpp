@@ -236,10 +236,26 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
     if (this->value == "where")
     {
         auto p = children[0];
-        auto eq = children[1];
-        auto children_eq = eq->getChildren();
+        auto children_eq = children[1]->getChildren();
         auto x = children_eq[0];
         auto e = children_eq[1];
+
+        shared_ptr<Gamma> g = make_shared<Gamma>();
+        shared_ptr<Lambda> l = make_shared<Lambda>();
+
+        bind_lambda(l, x, p);
+        g->addChild(l);
+        g->addChild(e);
+
+        return g;
+    }
+
+    if (this->value == "let")
+    {
+        auto children_eq = children[0]->getChildren();
+        auto x = children_eq[0];
+        auto e = children_eq[1];
+        auto p = children[1];
 
         shared_ptr<Gamma> g = make_shared<Gamma>();
         shared_ptr<Lambda> l = make_shared<Lambda>();
