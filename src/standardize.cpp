@@ -113,5 +113,39 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
         return eq;
     }
 
+    // Standardizations as in RPAL Semantics
+
+    if (this->value == "and")
+    {
+        auto left = children[0];
+        auto right = children[1];
+        auto l_children = left->getChildren();
+        auto r_children = right->getChildren();
+
+        shared_ptr<Equal> eq = make_shared<Equal>();
+        shared_ptr<Comma> comma = make_shared<Comma>();
+        vector<shared_ptr<STNode>> e_s;
+        comma->addChild(l_children[0]);
+        comma->addChild(r_children[0]);
+        e_s.push_back(l_children[1]);
+        e_s.push_back(r_children[1]);
+        shared_ptr<Tau> t = make_shared<Tau>(e_s);
+
+        eq->addChild(comma);
+        eq->addChild(t);
+        return eq;
+    }
+
+    if (this->value == "@")
+    {
+        shared_ptr<Gamma> g_1 = make_shared<Gamma>();
+        shared_ptr<Gamma> g_2 = make_shared<Gamma>();
+        g_2->addChild(children[1]);
+        g_2->addChild(children[0]);
+        g_1->addChild(g_2);
+        g_1->addChild(children[2]);
+        return g_1;
+    }
+
     return nullptr;
 }

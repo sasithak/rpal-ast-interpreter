@@ -387,3 +387,12 @@ string Equal::toString() const
 {
     return "=";
 }
+
+Comma::Comma()
+{
+}
+
+string Comma::toString() const
+{
+    return ",";
+}

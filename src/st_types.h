@@ -196,4 +196,11 @@ public:
     std::string toString() const;
 };
 
+class Comma : public STNode
+{
+public:
+    Comma();
+    std::string toString() const;
+};
+
 #endif // ST_TYPES_H
