@@ -8,6 +8,37 @@ using namespace std;
 string binaryOperators[] = {"+", "-", "*", "/", "**", "aug", "or", "&", "gr", "ls", "ge", "le", "eq", "ne"};
 string unaryOperators[] = {"not", "neg"};
 
+void bind_lambda(shared_ptr<Lambda> l, shared_ptr<STNode> b, shared_ptr<STNode> p)
+{
+    if (b->toString() == ",")
+    {
+        shared_ptr<Identifier> temp = make_shared<Identifier>("Temp");
+        l->addBinding(temp);
+        auto children = b->getChildren();
+        int childrenCnt = children.size();
+
+        weak_ptr<Lambda> w_l = l;
+        for (int i = childrenCnt - 1; i >= 0; --i)
+        {
+            shared_ptr<Gamma> g_1 = make_shared<Gamma>();
+            shared_ptr<Gamma> g_2 = make_shared<Gamma>();
+            shared_ptr<Lambda> l_1 = make_shared<Lambda>();
+
+            g_2->addChild(temp);
+            g_2->addChild(make_shared<Integer>(i + 1));
+            l_1->addBinding(dynamic_pointer_cast<Identifier>(children[i]));
+            w_l.lock()->addChild(g_1);
+            w_l = l_1;
+        }
+        w_l.lock()->addChild(p);
+    }
+    else
+    {
+        l->addBinding(dynamic_pointer_cast<Identifier>(b));
+        l->addChild(p);
+    }
+}
+
 shared_ptr<ST> AST::standardize() const
 {
     return make_shared<ST>(postOrder(root, 0));
