@@ -8,7 +8,7 @@
 class STNode
 {
 public:
-    void addChild(STNode *child);
+    void addChild(shared_ptr<STNode> child);
     std::vector<std::shared_ptr<STNode>> getChildren();
     virtual std::string toString() const = 0;
 
@@ -103,6 +103,7 @@ class BinaryOperator : public STNode
 {
 public:
     BinaryOperator(std::string operation);
+    BinaryOperator(std::string operation, std::shared_ptr<STNode> left, std::shared_ptr<STNode> right);
     std::string toString() const;
 
 private:
@@ -113,6 +114,7 @@ class UnaryOperator : public STNode
 {
 public:
     UnaryOperator(std::string operation);
+    UnaryOperator(std::string operation, std::shared_ptr<STNode> operand);
     std::string toString() const;
 
 private:

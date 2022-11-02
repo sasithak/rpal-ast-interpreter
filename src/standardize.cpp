@@ -5,6 +5,9 @@
 
 using namespace std;
 
+string binaryOperators[] = {"+", "-", "*", "/", "**", "aug", "or", "&", "gr", "ls", "ge", "le", "eq", "ne"};
+string unaryOperators[] = {"not", "neg"};
+
 shared_ptr<ST> AST::standardize() const
 {
     return make_shared<ST>(postOrder(root, 0));
@@ -39,6 +42,30 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
     else if (this->type == STRING)
     {
         return make_shared<String>(this->value);
+    }
+    else if (this->value == "true")
+    {
+        return make_shared<TruthValue>(true);
+    }
+    else if (this->value == "false")
+    {
+        return make_shared<TruthValue>(false);
+    }
+
+    for (int i = 0; i < 2; i++)
+    {
+        if (this->value == unaryOperators[i])
+        {
+            return make_shared<UnaryOperator>(this->value, children[0]);
+        }
+    }
+
+    for (int i = 0; i < 14; i++)
+    {
+        if (this->value == binaryOperators[i])
+        {
+            return make_shared<BinaryOperator>(this->value, children[0], children[1]);
+        }
     }
 
     return nullptr;

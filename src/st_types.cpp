@@ -6,9 +6,9 @@
 
 using namespace std;
 
-void STNode::addChild(STNode *child)
+void STNode::addChild(shared_ptr<STNode> child)
 {
-    children.push_back(shared_ptr<STNode>(child));
+    children.push_back(child);
 }
 
 vector<shared_ptr<STNode>> STNode::getChildren()
@@ -243,6 +243,13 @@ BinaryOperator::BinaryOperator(string op)
     this->operation = op;
 }
 
+BinaryOperator::BinaryOperator(string op, shared_ptr<STNode> left, shared_ptr<STNode> right)
+{
+    this->operation = op;
+    this->addChild(left);
+    this->addChild(right);
+}
+
 string BinaryOperator::toString() const
 {
     return operation;
@@ -251,6 +258,12 @@ string BinaryOperator::toString() const
 UnaryOperator::UnaryOperator(string op)
 {
     this->operation = op;
+}
+
+UnaryOperator::UnaryOperator(string op, shared_ptr<STNode> child)
+{
+    this->operation = op;
+    this->addChild(child);
 }
 
 string UnaryOperator::toString() const
