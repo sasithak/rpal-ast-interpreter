@@ -16,6 +16,12 @@ vector<shared_ptr<STNode>> STNode::getChildren()
     return children;
 }
 
+ostream &operator<<(ostream &os, const STNode &node)
+{
+    os << node.toString();
+    return os;
+}
+
 TruthValue::TruthValue(string value)
 {
     this->value = value == "true";

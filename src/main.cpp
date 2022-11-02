@@ -14,6 +14,9 @@ int main(int argc, char *argv[])
     vector<string> tokens = getTokens(filename);
     shared_ptr<AST> ast = AST::createAST(tokens);
     ast->printAST();
+    cout << endl;
+    shared_ptr<ST> st = ast->standardize();
+    st->printST();
     return 0;
 }
 

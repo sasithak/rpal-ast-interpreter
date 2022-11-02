@@ -11,6 +11,7 @@ public:
     void addChild(std::shared_ptr<STNode> child);
     std::vector<std::shared_ptr<STNode>> getChildren();
     virtual std::string toString() const = 0;
+    friend std::ostream &operator<<(std::ostream &os, const STNode &node);
 
 private:
     std::vector<std::shared_ptr<STNode>> children;
