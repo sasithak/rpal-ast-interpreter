@@ -54,16 +54,7 @@ shared_ptr<STNode> AST::postOrder(shared_ptr<ASTNode> node, int level) const
     vector<shared_ptr<STNode>> children;
     for (auto child : node->children)
     {
-        auto childNode = postOrder(child, level + 1);
-
-        if (childNode->toString() != "arrow")
-        {
-            children.push_back(childNode);
-        }
-        else
-        {
-            children.insert(children.end(), childNode->getChildren().begin(), childNode->getChildren().end());
-        }
+        children.push_back(postOrder(child, level + 1));
     }
 
     return node->standardize(children);
@@ -125,7 +116,7 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
         return make_shared<Tau>(children);
     }
 
-    if (this->value == "fcn_form")
+    if (this->value == "function_form")
     {
         int childrenCnt = children.size();
         auto p = children[0];
@@ -264,6 +255,14 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
         g->addChild(l);
         g->addChild(e);
 
+        return g;
+    }
+
+    if (this->value == "gamma")
+    {
+        shared_ptr<Gamma> g = make_shared<Gamma>();
+        g->addChild(children[0]);
+        g->addChild(children[1]);
         return g;
     }
 
