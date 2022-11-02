@@ -113,6 +113,19 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
         return eq;
     }
 
+    if (this->value == "lambda")
+    {
+        int childrenCnt = children.size();
+        auto e = children[childrenCnt - 1];
+        shared_ptr<Lambda> l = make_shared<Lambda>();
+        l->addChild(e);
+        for (int i = 0; i < childrenCnt - 1; ++i)
+        {
+            l->addBinding(dynamic_pointer_cast<Identifier>(children[i]));
+        }
+        return l;
+    }
+
     // Standardizations as in RPAL Semantics
 
     if (this->value == "and")
