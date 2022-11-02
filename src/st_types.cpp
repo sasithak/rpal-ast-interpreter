@@ -303,7 +303,26 @@ Lambda::Lambda()
 
 string Lambda::toString() const
 {
-    return "lambda";
+    string s = "lambda^";
+    if (bindingCount > 1)
+    {
+        s += "(";
+        for (int i = 0; i < bindingCount; ++i)
+        {
+            s += bindings[i]->toString();
+            if (i != bindingCount - 1)
+            {
+                s += ",";
+            }
+        }
+        s += ")";
+    }
+    else
+    {
+        s += bindings[0]->toString();
+    }
+
+    return s;
 }
 
 int Lambda::getBindingCount() const
@@ -333,7 +352,7 @@ Tau::Tau(vector<shared_ptr<STNode>> children)
 
 string Tau::toString() const
 {
-    return "tau " + to_string(n);
+    return "tau_" + to_string(n);
 }
 
 Arrow::Arrow(vector<shared_ptr<STNode>> children)
