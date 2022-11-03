@@ -159,7 +159,7 @@ string String::getValue() const
 
 string String::toString() const
 {
-    return value;
+    return "'" + value + "'";
 }
 
 shared_ptr<TruthValue> String::operator==(shared_ptr<String> other) const
@@ -205,6 +205,9 @@ vector<shared_ptr<STNode>> Tuple::getValues() const
 
 string Tuple::toString() const
 {
+    if (size == 0)
+        return "nil";
+
     string str = "(";
     for (int i = 0; i < size; ++i)
     {
@@ -299,11 +302,15 @@ string Gamma::toString() const
 Lambda::Lambda()
 {
     this->bindingCount = 0;
+    this->index = 0;
 }
 
 string Lambda::toString() const
 {
-    string s = "lambda^";
+    string s = "lambda";
+    if (index > 0)
+        s += "_" + to_string(index);
+    s += "^";
     if (bindingCount > 1)
     {
         s += "(";
@@ -341,6 +348,16 @@ void Lambda::addBinding(shared_ptr<Identifier> binding)
     ++bindingCount;
 }
 
+int Lambda::getIndex() const
+{
+    return index;
+}
+
+void Lambda::setIndex(int index)
+{
+    this->index = index;
+}
+
 Tau::Tau(vector<shared_ptr<STNode>> children)
 {
     n = children.size();
@@ -371,28 +388,29 @@ string Arrow::toString() const
 
 Delta::Delta(shared_ptr<STNode> child)
 {
+    this->index = -1;
     this->addChild(child);
 }
 
-Delta::Delta(int n, shared_ptr<STNode> child)
+Delta::Delta(int index, shared_ptr<STNode> child)
 {
-    this->n = n;
+    this->index = index;
     this->addChild(child);
 }
 
 string Delta::toString() const
 {
-    return "delta";
+    return "delta" + (index >= 0 ? "_" + to_string(index) : "");
 }
 
-void Delta::setN(int n)
+void Delta::setIndex(int index)
 {
-    this->n = n;
+    this->index = index;
 }
 
-int Delta::getN() const
+int Delta::getIndex() const
 {
-    return n;
+    return index;
 }
 
 Beta::Beta()

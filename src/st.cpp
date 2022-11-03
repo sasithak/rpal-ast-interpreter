@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include "st.h"
 
 using namespace std;
@@ -10,12 +11,36 @@ ST::ST(shared_ptr<STNode> root)
 
 void ST::execute()
 {
-    cout << "Executing..." << endl;
+    vector<vector<shared_ptr<STNode>>> controlStructures;
+    vector<shared_ptr<Delta>> deltas;
+
+    shared_ptr<Delta> delta = make_shared<Delta>(0, root);
+    deltas.push_back(delta);
+
+    int i = 0;
+    while (i < (int)deltas.size())
+    {
+        vector<shared_ptr<STNode>> controlStructure;
+        preOrder(deltas[i]->getChildren()[0], controlStructure, deltas);
+        controlStructures.push_back(controlStructure);
+        ++i;
+    }
+
+    int width = 6 + to_string(controlStructures.size()).length();
+    for (int i = 0; i < (int)controlStructures.size(); ++i)
+    {
+        cout << right << setw(width) << ("delta_" + to_string(i)) << left << ": ";
+        for (int j = 0; j < (int)controlStructures[i].size(); ++j)
+        {
+            cout << controlStructures[i][j]->toString() << (j == (int)controlStructures[i].size() - 1 ? "" : " ");
+        }
+        cout << endl;
+    }
 }
 
 ostream &operator<<(ostream &os, const ST &st)
 {
-    st.preOrderPrint(st.root, 0, os);
+    st.preOrder(st.root, 0, os);
     return os;
 }
 
@@ -24,7 +49,7 @@ void ST::printST()
     cout << *this;
 }
 
-void ST::preOrderPrint(shared_ptr<STNode> node, int level, ostream &os) const
+void ST::preOrder(shared_ptr<STNode> node, int level, ostream &os) const
 {
     if (node == nullptr)
     {
@@ -38,6 +63,44 @@ void ST::preOrderPrint(shared_ptr<STNode> node, int level, ostream &os) const
     os << *node << endl;
     for (auto child : node->getChildren())
     {
-        preOrderPrint(child, level + 1, os);
+        preOrder(child, level + 1, os);
+    }
+}
+
+void ST::preOrder(shared_ptr<STNode> node, vector<shared_ptr<STNode>> &controlStructure, vector<shared_ptr<Delta>> &deltas) const
+{
+    if (node == nullptr)
+    {
+        return;
+    }
+
+    bool expandChildren = true;
+    string nodeStr = node->toString();
+    if (nodeStr != "->")
+    {
+        if (nodeStr.rfind("lambda", 0) == 0)
+        {
+            dynamic_pointer_cast<Lambda>(node)->setIndex(deltas.size());
+            shared_ptr<Delta> delta = make_shared<Delta>(deltas.size(), node->getChildren()[0]);
+            deltas.push_back(delta);
+            expandChildren = false;
+        }
+
+        else if (nodeStr.rfind("delta", 0) == 0)
+        {
+            dynamic_pointer_cast<Delta>(node)->setIndex(deltas.size());
+            deltas.push_back(dynamic_pointer_cast<Delta>(node));
+            expandChildren = false;
+        }
+
+        controlStructure.push_back(node);
+    }
+
+    if (expandChildren)
+    {
+        for (auto child : node->getChildren())
+        {
+            preOrder(child, controlStructure, deltas);
+        }
     }
 }

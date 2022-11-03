@@ -24,11 +24,16 @@ int main(int argc, char *argv[])
 
     string filename(argv[1]);
     vector<string> tokens = getTokens(filename);
+
     shared_ptr<AST> ast = AST::createAST(tokens);
     ast->printAST();
     cout << endl;
+
     shared_ptr<ST> st = ast->standardize();
     st->printST();
+    cout << endl;
+
+    st->execute();
     return 0;
 }
 

@@ -147,9 +147,12 @@ public:
     int getBindingCount() const;
     std::vector<std::shared_ptr<Identifier>> getBindings() const;
     void addBinding(std::shared_ptr<Identifier> binding);
+    int getIndex() const;
+    void setIndex(int index);
 
 private:
     int bindingCount;
+    int index;
     std::vector<std::shared_ptr<Identifier>> bindings;
 };
 
@@ -174,13 +177,13 @@ class Delta : public STNode
 {
 public:
     Delta(std::shared_ptr<STNode> child);
-    Delta(int n, std::shared_ptr<STNode> child);
+    Delta(int index, std::shared_ptr<STNode> child);
     std::string toString() const;
-    void setN(int n);
-    int getN() const;
+    void setIndex(int index);
+    int getIndex() const;
 
 private:
-    int n;
+    int index;
 };
 
 class Beta : public STNode

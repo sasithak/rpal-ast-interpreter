@@ -16,7 +16,8 @@ public:
 
 private:
     std::shared_ptr<STNode> root;
-    void preOrderPrint(std::shared_ptr<STNode> node, int level, std::ostream &os) const;
+    void preOrder(std::shared_ptr<STNode> node, int level, std::ostream &os) const;
+    void preOrder(std::shared_ptr<STNode> node, std::vector<std::shared_ptr<STNode>> &controlStructure, std::vector<std::shared_ptr<Delta>> &deltas) const;
 };
 
 #endif // ST_H
