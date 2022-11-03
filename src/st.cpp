@@ -36,6 +36,8 @@ void ST::execute()
         }
         cout << endl;
     }
+
+    runCSEMachine(controlStructures);
 }
 
 ostream &operator<<(ostream &os, const ST &st)

@@ -1,12 +1,10 @@
 #include <iostream>
 #include <vector>
 #include "ast.h"
+#include "operators.h"
 #include "st.h"
 
 using namespace std;
-
-string binaryOperators[] = {"+", "-", "*", "/", "**", "aug", "or", "&", "gr", "ls", "ge", "le", "eq", "ne"};
-string unaryOperators[] = {"not", "neg"};
 
 void bind_lambda(shared_ptr<Lambda> l, shared_ptr<STNode> b, shared_ptr<STNode> p)
 {
@@ -89,20 +87,14 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     // Custom standardizations as in CSE Machine rules
 
-    for (int i = 0; i < 2; i++)
+    if (isUnOp(this->value))
     {
-        if (this->value == unaryOperators[i])
-        {
-            return make_shared<UnaryOperator>(this->value, children[0]);
-        }
+        return make_shared<UnaryOperator>(this->value, children[0]);
     }
 
-    for (int i = 0; i < 14; i++)
+    if (isBinOp(this->value))
     {
-        if (this->value == binaryOperators[i])
-        {
-            return make_shared<BinaryOperator>(this->value, children[0], children[1]);
-        }
+        return make_shared<BinaryOperator>(this->value, children[0], children[1]);
     }
 
     if (this->value == "->")

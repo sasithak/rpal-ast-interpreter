@@ -44,6 +44,7 @@ public:
     int getValue() const;
     std::string toString() const;
     std::string getType() const;
+    std::shared_ptr<Integer> negate() const;
     std::shared_ptr<Integer> operator+(std::shared_ptr<Integer> other) const;
     std::shared_ptr<Integer> operator-(std::shared_ptr<Integer> other) const;
     std::shared_ptr<Integer> operator*(std::shared_ptr<Integer> other) const;

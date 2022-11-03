@@ -97,6 +97,11 @@ string Integer::getType() const
     return "Integer";
 }
 
+shared_ptr<Integer> Integer::negate() const
+{
+    return make_shared<Integer>(-value);
+}
+
 shared_ptr<Integer> Integer::operator+(shared_ptr<Integer> other) const
 {
     return make_shared<Integer>(value + other->getValue());
