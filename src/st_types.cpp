@@ -42,6 +42,11 @@ string TruthValue::toString() const
     return value ? "true" : "false";
 }
 
+string TruthValue::getType() const
+{
+    return "TruthValue";
+}
+
 shared_ptr<TruthValue> TruthValue::operator&&(shared_ptr<TruthValue> other) const
 {
     return make_shared<TruthValue>(value && other->getValue());
@@ -85,6 +90,11 @@ int Integer::getValue() const
 string Integer::toString() const
 {
     return to_string(value);
+}
+
+string Integer::getType() const
+{
+    return "Integer";
 }
 
 shared_ptr<Integer> Integer::operator+(shared_ptr<Integer> other) const
@@ -162,6 +172,11 @@ string String::toString() const
     return "'" + value + "'";
 }
 
+string String::getType() const
+{
+    return "String";
+}
+
 shared_ptr<TruthValue> String::operator==(shared_ptr<String> other) const
 {
     return make_shared<TruthValue>(value == other->getValue());
@@ -221,6 +236,11 @@ string Tuple::toString() const
     return str;
 }
 
+string Tuple::getType() const
+{
+    return "Tuple";
+}
+
 void Tuple::push_back(shared_ptr<STNode> value)
 {
     values.push_back(value);
@@ -247,6 +267,11 @@ string Identifier::toString() const
     return name;
 }
 
+string Identifier::getType() const
+{
+    return "Identifier";
+}
+
 BinaryOperator::BinaryOperator(string op)
 {
     this->operation = op;
@@ -262,6 +287,11 @@ BinaryOperator::BinaryOperator(string op, shared_ptr<STNode> left, shared_ptr<ST
 string BinaryOperator::toString() const
 {
     return operation;
+}
+
+string BinaryOperator::getType() const
+{
+    return "BinaryOperator";
 }
 
 UnaryOperator::UnaryOperator(string op)
@@ -280,6 +310,11 @@ string UnaryOperator::toString() const
     return operation;
 }
 
+string UnaryOperator::getType() const
+{
+    return "UnaryOperator";
+}
+
 Function::Function(string name)
 {
     this->name = name;
@@ -290,6 +325,11 @@ string Function::toString() const
     return name;
 }
 
+string Function::getType() const
+{
+    return "Function";
+}
+
 Gamma::Gamma()
 {
 }
@@ -297,6 +337,11 @@ Gamma::Gamma()
 string Gamma::toString() const
 {
     return "gamma";
+}
+
+string Gamma::getType() const
+{
+    return "Gamma";
 }
 
 Lambda::Lambda()
@@ -330,6 +375,11 @@ string Lambda::toString() const
     }
 
     return s;
+}
+
+string Lambda::getType() const
+{
+    return "Lambda";
 }
 
 int Lambda::getBindingCount() const
@@ -372,6 +422,11 @@ string Tau::toString() const
     return "tau_" + to_string(n);
 }
 
+string Tau::getType() const
+{
+    return "Tau";
+}
+
 Arrow::Arrow(vector<shared_ptr<STNode>> children)
 {
     int n = children.size();
@@ -384,6 +439,11 @@ Arrow::Arrow(vector<shared_ptr<STNode>> children)
 string Arrow::toString() const
 {
     return "->";
+}
+
+string Arrow::getType() const
+{
+    return "Arrow";
 }
 
 Delta::Delta(shared_ptr<STNode> child)
@@ -401,6 +461,11 @@ Delta::Delta(int index, shared_ptr<STNode> child)
 string Delta::toString() const
 {
     return "delta" + (index >= 0 ? "_" + to_string(index) : "");
+}
+
+string Delta::getType() const
+{
+    return "Delta";
 }
 
 void Delta::setIndex(int index)
@@ -422,6 +487,11 @@ string Beta::toString() const
     return "beta";
 }
 
+string Beta::getType() const
+{
+    return "Beta";
+}
+
 Equal::Equal()
 {
 }
@@ -429,6 +499,11 @@ Equal::Equal()
 string Equal::toString() const
 {
     return "=";
+}
+
+string Equal::getType() const
+{
+    return "Equal";
 }
 
 Comma::Comma()
@@ -440,6 +515,11 @@ string Comma::toString() const
     return ",";
 }
 
+string Comma::getType() const
+{
+    return "Comma";
+}
+
 YStar::YStar()
 {
 }
@@ -447,4 +527,9 @@ YStar::YStar()
 string YStar::toString() const
 {
     return "Y";
+}
+
+string YStar::getType() const
+{
+    return "YStar";
 }

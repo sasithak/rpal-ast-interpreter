@@ -11,6 +11,7 @@ public:
     void addChild(std::shared_ptr<STNode> child);
     std::vector<std::shared_ptr<STNode>> getChildren();
     virtual std::string toString() const = 0;
+    virtual std::string getType() const = 0;
     friend std::ostream &operator<<(std::ostream &os, const STNode &node);
 
 private:
@@ -24,6 +25,7 @@ public:
     TruthValue(bool value);
     bool getValue() const;
     std::string toString() const;
+    std::string getType() const;
     std::shared_ptr<TruthValue> operator&&(std::shared_ptr<TruthValue> other) const;
     std::shared_ptr<TruthValue> operator||(std::shared_ptr<TruthValue> other) const;
     std::shared_ptr<TruthValue> operator!() const;
@@ -41,6 +43,7 @@ public:
     Integer(int value);
     int getValue() const;
     std::string toString() const;
+    std::string getType() const;
     std::shared_ptr<Integer> operator+(std::shared_ptr<Integer> other) const;
     std::shared_ptr<Integer> operator-(std::shared_ptr<Integer> other) const;
     std::shared_ptr<Integer> operator*(std::shared_ptr<Integer> other) const;
@@ -64,6 +67,7 @@ public:
     String(const char &value);
     std::string getValue() const;
     std::string toString() const;
+    std::string getType() const;
     std::shared_ptr<TruthValue> operator==(std::shared_ptr<String> other) const;
     std::shared_ptr<TruthValue> operator!=(std::shared_ptr<String> other) const;
     std::shared_ptr<String> operator+(std::shared_ptr<String> other) const;
@@ -81,6 +85,7 @@ public:
     Tuple(std::vector<std::shared_ptr<STNode>> values);
     std::vector<std::shared_ptr<STNode>> getValues() const;
     std::string toString() const;
+    std::string getType() const;
     void push_back(std::shared_ptr<STNode> value);
     std::shared_ptr<STNode> operator[](int index) const;
 
@@ -95,6 +100,7 @@ public:
     Identifier(std::string name);
     std::string getName() const;
     std::string toString() const;
+    std::string getType() const;
 
 private:
     std::string name;
@@ -106,6 +112,7 @@ public:
     BinaryOperator(std::string operation);
     BinaryOperator(std::string operation, std::shared_ptr<STNode> left, std::shared_ptr<STNode> right);
     std::string toString() const;
+    std::string getType() const;
 
 private:
     std::string operation;
@@ -117,6 +124,7 @@ public:
     UnaryOperator(std::string operation);
     UnaryOperator(std::string operation, std::shared_ptr<STNode> operand);
     std::string toString() const;
+    std::string getType() const;
 
 private:
     std::string operation;
@@ -127,6 +135,7 @@ class Function : public STNode
 public:
     Function(std::string name);
     std::string toString() const;
+    std::string getType() const;
 
 private:
     std::string name;
@@ -137,6 +146,7 @@ class Gamma : public STNode
 public:
     Gamma();
     std::string toString() const;
+    std::string getType() const;
 };
 
 class Lambda : public STNode
@@ -144,6 +154,7 @@ class Lambda : public STNode
 public:
     Lambda();
     std::string toString() const;
+    std::string getType() const;
     int getBindingCount() const;
     std::vector<std::shared_ptr<Identifier>> getBindings() const;
     void addBinding(std::shared_ptr<Identifier> binding);
@@ -161,6 +172,7 @@ class Tau : public STNode
 public:
     Tau(std::vector<std::shared_ptr<STNode>> children);
     std::string toString() const;
+    std::string getType() const;
 
 private:
     int n;
@@ -171,6 +183,7 @@ class Arrow : public STNode
 public:
     Arrow(std::vector<std::shared_ptr<STNode>> children);
     std::string toString() const;
+    std::string getType() const;
 };
 
 class Delta : public STNode
@@ -179,6 +192,7 @@ public:
     Delta(std::shared_ptr<STNode> child);
     Delta(int index, std::shared_ptr<STNode> child);
     std::string toString() const;
+    std::string getType() const;
     void setIndex(int index);
     int getIndex() const;
 
@@ -191,6 +205,7 @@ class Beta : public STNode
 public:
     Beta();
     std::string toString() const;
+    std::string getType() const;
 };
 
 class Equal : public STNode
@@ -198,6 +213,7 @@ class Equal : public STNode
 public:
     Equal();
     std::string toString() const;
+    std::string getType() const;
 };
 
 class Comma : public STNode
@@ -205,6 +221,7 @@ class Comma : public STNode
 public:
     Comma();
     std::string toString() const;
+    std::string getType() const;
 };
 
 class YStar : public STNode
@@ -212,6 +229,7 @@ class YStar : public STNode
 public:
     YStar();
     std::string toString() const;
+    std::string getType() const;
 };
 
 #endif // ST_TYPES_H
