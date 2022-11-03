@@ -82,6 +82,10 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
     {
         return make_shared<TruthValue>(false);
     }
+    else if (this->value == "<nil>")
+    {
+        return make_shared<Tuple>();
+    }
 
     // Custom standardizations as in CSE Machine rules
 
