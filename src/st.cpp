@@ -64,7 +64,7 @@ void ST::preOrder(shared_ptr<STNode> node, int level, ostream &os) const
     }
     os << *node << endl;
 
-    if (node->toString() == "->")
+    if (node->getType() == "Arrow")
     {
         auto children = node->getChildren();
         preOrder(children[3], level + 1, os);
@@ -88,10 +88,10 @@ void ST::preOrder(shared_ptr<STNode> node, vector<shared_ptr<STNode>> &controlSt
     }
 
     bool expandChildren = true;
-    string nodeStr = node->toString();
-    if (nodeStr != "->")
+    string nodeType = node->getType();
+    if (nodeType != "Arrow")
     {
-        if (nodeStr.rfind("lambda", 0) == 0)
+        if (nodeType == "Lambda")
         {
             dynamic_pointer_cast<Lambda>(node)->setIndex(deltas.size());
             shared_ptr<Delta> delta = make_shared<Delta>(deltas.size(), node->getChildren()[0]);
@@ -99,7 +99,7 @@ void ST::preOrder(shared_ptr<STNode> node, vector<shared_ptr<STNode>> &controlSt
             expandChildren = false;
         }
 
-        else if (nodeStr.rfind("delta", 0) == 0)
+        else if (nodeType == "Delta")
         {
             dynamic_pointer_cast<Delta>(node)->setIndex(deltas.size());
             deltas.push_back(dynamic_pointer_cast<Delta>(node));

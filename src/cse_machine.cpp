@@ -15,7 +15,8 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
 
 shared_ptr<STNode> apply(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand)
 {
-    if (unOp->getType() == "not")
+    string unOpStr = unOp->toString();
+    if (unOpStr == "not")
     {
         if (rand->getType() == "TruthValue")
         {
@@ -26,7 +27,7 @@ shared_ptr<STNode> apply(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand
             return nullptr;
         }
     }
-    else if (unOp->getType() == "neg")
+    else if (unOpStr == "neg")
     {
         if (rand->getType() == "Integer")
         {
@@ -45,7 +46,8 @@ shared_ptr<STNode> apply(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand
 
 shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> rand_l, shared_ptr<STNode> rand_r)
 {
-    if (binOp->getType() == "+")
+    string binOpStr = binOp->toString();
+    if (binOpStr == "+")
     {
         if (rand_l->getType() == "Integer" && rand_r->getType() == "Integer")
         {
@@ -56,7 +58,7 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
             return nullptr;
         }
     }
-    else if (binOp->getType() == "-")
+    else if (binOpStr == "-")
     {
         if (rand_l->getType() == "Integer" && rand_r->getType() == "Integer")
         {
@@ -67,7 +69,7 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
             return nullptr;
         }
     }
-    else if (binOp->getType() == "*")
+    else if (binOpStr == "*")
     {
         if (rand_l->getType() == "Integer" && rand_r->getType() == "Integer")
         {
@@ -78,7 +80,7 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
             return nullptr;
         }
     }
-    else if (binOp->getType() == "/")
+    else if (binOpStr == "/")
     {
         if (rand_l->getType() == "Integer" && rand_r->getType() == "Integer")
         {
@@ -89,7 +91,7 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
             return nullptr;
         }
     }
-    else if (binOp->getType() == "**")
+    else if (binOpStr == "**")
     {
         if (rand_l->getType() == "Integer" && rand_r->getType() == "Integer")
         {
@@ -100,7 +102,7 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
             return nullptr;
         }
     }
-    else if (binOp->getType() == "aug")
+    else if (binOpStr == "aug")
     {
         if (rand_l->getType() == "Tuple")
         {
@@ -112,7 +114,7 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
             return nullptr;
         }
     }
-    else if (binOp->getType() == "or")
+    else if (binOpStr == "or")
     {
         if (rand_l->getType() == "TruthValue" && rand_r->getType() == "TruthValue")
         {
@@ -123,7 +125,7 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
             return nullptr;
         }
     }
-    else if (binOp->getType() == "&")
+    else if (binOpStr == "&")
     {
         if (rand_l->getType() == "TruthValue" && rand_r->getType() == "TruthValue")
         {
@@ -134,7 +136,7 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
             return nullptr;
         }
     }
-    else if (binOp->getType() == "gr")
+    else if (binOpStr == "gr")
     {
         if (rand_l->getType() == "Integer" && rand_r->getType() == "Integer")
         {
@@ -145,7 +147,7 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
             return nullptr;
         }
     }
-    else if (binOp->getType() == "ls")
+    else if (binOpStr == "ls")
     {
         if (rand_l->getType() == "Integer" && rand_r->getType() == "Integer")
         {
@@ -156,7 +158,7 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
             return nullptr;
         }
     }
-    else if (binOp->getType() == "ge")
+    else if (binOpStr == "ge")
     {
         if (rand_l->getType() == "Integer" && rand_r->getType() == "Integer")
         {
@@ -167,7 +169,7 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
             return nullptr;
         }
     }
-    else if (binOp->getType() == "le")
+    else if (binOpStr == "le")
     {
         if (rand_l->getType() == "Integer" && rand_r->getType() == "Integer")
         {
@@ -178,7 +180,7 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
             return nullptr;
         }
     }
-    else if (binOp->getType() == "eq")
+    else if (binOpStr == "eq")
     {
         if (rand_l->getType() == "Integer" && rand_r->getType() == "Integer")
         {
@@ -197,7 +199,7 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
             return nullptr;
         }
     }
-    else if (binOp->getType() == "neq")
+    else if (binOpStr == "neq")
     {
         if (rand_l->getType() == "Integer" && rand_r->getType() == "Integer")
         {
