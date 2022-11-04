@@ -63,9 +63,20 @@ void ST::preOrder(shared_ptr<STNode> node, int level, ostream &os) const
         os << ".";
     }
     os << *node << endl;
-    for (auto child : node->getChildren())
+
+    if (node->toString() == "->")
     {
-        preOrder(child, level + 1, os);
+        auto children = node->getChildren();
+        preOrder(children[3], level + 1, os);
+        preOrder(children[0]->getChildren()[0], level + 1, os);
+        preOrder(children[1]->getChildren()[0], level + 1, os);
+    }
+    else
+    {
+        for (auto child : node->getChildren())
+        {
+            preOrder(child, level + 1, os);
+        }
     }
 }
 
