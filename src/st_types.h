@@ -85,6 +85,7 @@ public:
     Tuple();
     Tuple(std::vector<std::shared_ptr<STNode>> values);
     std::vector<std::shared_ptr<STNode>> getValues() const;
+    int getOrder() const;
     std::string toString() const;
     std::string getType() const;
     void push_back(std::shared_ptr<STNode> value);

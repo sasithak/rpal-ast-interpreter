@@ -223,6 +223,11 @@ vector<shared_ptr<STNode>> Tuple::getValues() const
     return values;
 }
 
+int Tuple::getOrder() const
+{
+    return size;
+}
+
 string Tuple::toString() const
 {
     if (size == 0)
