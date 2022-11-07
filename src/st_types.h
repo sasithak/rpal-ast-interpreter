@@ -24,8 +24,8 @@ public:
     TruthValue(std::string value);
     TruthValue(bool value);
     bool getValue() const;
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
     std::shared_ptr<TruthValue> operator&&(std::shared_ptr<TruthValue> other) const;
     std::shared_ptr<TruthValue> operator||(std::shared_ptr<TruthValue> other) const;
     std::shared_ptr<TruthValue> operator!() const;
@@ -42,8 +42,8 @@ public:
     Integer(std::string value);
     Integer(int value);
     int getValue() const;
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
     std::shared_ptr<Integer> negate() const;
     std::shared_ptr<Integer> operator+(std::shared_ptr<Integer> other) const;
     std::shared_ptr<Integer> operator-(std::shared_ptr<Integer> other) const;
@@ -67,8 +67,8 @@ public:
     String(std::string value);
     String(const char &value);
     std::string getValue() const;
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
     std::shared_ptr<TruthValue> operator==(std::shared_ptr<String> other) const;
     std::shared_ptr<TruthValue> operator!=(std::shared_ptr<String> other) const;
     std::shared_ptr<String> operator+(std::shared_ptr<String> other) const;
@@ -86,8 +86,8 @@ public:
     Tuple(std::vector<std::shared_ptr<STNode>> values);
     std::vector<std::shared_ptr<STNode>> getValues() const;
     int getOrder() const;
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
     void push_back(std::shared_ptr<STNode> value);
     std::shared_ptr<STNode> operator[](int index) const;
 
@@ -101,8 +101,8 @@ class Identifier : public STNode
 public:
     Identifier(std::string name);
     std::string getName() const;
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
 
 private:
     std::string name;
@@ -113,8 +113,8 @@ class BinaryOperator : public STNode
 public:
     BinaryOperator(std::string operation);
     BinaryOperator(std::string operation, std::shared_ptr<STNode> left, std::shared_ptr<STNode> right);
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
 
 private:
     std::string operation;
@@ -125,8 +125,8 @@ class UnaryOperator : public STNode
 public:
     UnaryOperator(std::string operation);
     UnaryOperator(std::string operation, std::shared_ptr<STNode> operand);
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
 
 private:
     std::string operation;
@@ -136,8 +136,8 @@ class Function : public STNode
 {
 public:
     Function(std::string name);
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
 
 private:
     std::string name;
@@ -147,16 +147,16 @@ class Gamma : public STNode
 {
 public:
     Gamma();
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
 };
 
 class Lambda : public STNode
 {
 public:
     Lambda();
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
     int getBindingCount() const;
     std::vector<std::shared_ptr<Identifier>> getBindings() const;
     void addBinding(std::shared_ptr<Identifier> binding);
@@ -173,8 +173,8 @@ class Tau : public STNode
 {
 public:
     Tau(std::vector<std::shared_ptr<STNode>> children);
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
 
 private:
     int n;
@@ -184,8 +184,8 @@ class Arrow : public STNode
 {
 public:
     Arrow(std::vector<std::shared_ptr<STNode>> children);
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
 };
 
 class Delta : public STNode
@@ -193,8 +193,8 @@ class Delta : public STNode
 public:
     Delta(std::shared_ptr<STNode> child);
     Delta(int index, std::shared_ptr<STNode> child);
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
     void setIndex(int index);
     int getIndex() const;
 
@@ -206,32 +206,32 @@ class Beta : public STNode
 {
 public:
     Beta();
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
 };
 
 class Equal : public STNode
 {
 public:
     Equal();
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
 };
 
 class Comma : public STNode
 {
 public:
     Comma();
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
 };
 
 class YStar : public STNode
 {
 public:
     YStar();
-    std::string toString() const;
-    std::string getType() const;
+    std::string toString() const override;
+    std::string getType() const override;
 };
 
 #endif // ST_TYPES_H
