@@ -234,4 +234,19 @@ public:
     std::string getType() const override;
 };
 
+class Eta : public STNode
+{
+public:
+    Eta(std::shared_ptr<Lambda> l);
+    std::string toString() const override;
+    std::string getType() const override;
+    std::shared_ptr<Lambda> getLambda() const;
+    int getBindingCount() const;
+    std::vector<std::shared_ptr<Identifier>> getBindings() const;
+    int getIndex() const;
+
+private:
+    std::shared_ptr<Lambda> l;
+};
+
 #endif // ST_TYPES_H

@@ -543,3 +543,64 @@ string YStar::getType() const
 {
     return "YStar";
 }
+
+Eta::Eta(shared_ptr<Lambda> l)
+{
+    this->l = l;
+}
+
+string Eta::toString() const
+{
+    int index = l->getIndex();
+    int bindingCount = l->getBindingCount();
+    auto bindings = l->getBindings();
+
+    string s = "eta";
+    if (index > 0)
+        s += "_" + to_string(index);
+    s += "^";
+    if (bindingCount > 1)
+    {
+        s += "(";
+        for (int i = 0; i < bindingCount; ++i)
+        {
+            s += bindings[i]->toString();
+            if (i != bindingCount - 1)
+            {
+                s += ",";
+            }
+        }
+        s += ")";
+    }
+    else
+    {
+        s += bindings[0]->toString();
+    }
+
+    return s;
+}
+
+string Eta::getType() const
+{
+    return "Eta";
+}
+
+shared_ptr<Lambda> Eta::getLambda() const
+{
+    return l;
+}
+
+int Eta::getBindingCount() const
+{
+    return l->getBindingCount();
+}
+
+vector<shared_ptr<Identifier>> Eta::getBindings() const
+{
+    return l->getBindings();
+}
+
+int Eta::getIndex() const
+{
+    return l->getIndex();
+}
