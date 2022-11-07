@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include "st_types.h"
 
-class Environment : STNode
+class Environment : public STNode
 {
 public:
     Environment();
