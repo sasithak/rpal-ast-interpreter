@@ -1,4 +1,5 @@
 #include <iostream>
+#include "environment.h"
 #include "operators.h"
 #include "st.h"
 #include "st_types.h"
@@ -10,7 +11,9 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
 
 void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
 {
-    cout << "Running CSE Machine..." << endl;
+    vector<shared_ptr<Environment>> environments;
+    auto e_0 = make_shared<Environment>();
+    environments.push_back(e_0);
 }
 
 shared_ptr<STNode> apply(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand)

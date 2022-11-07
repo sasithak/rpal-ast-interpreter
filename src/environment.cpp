@@ -11,6 +11,11 @@ int Environment::nextIndex = 0;
 Environment::Environment()
 {
     this->index = nextIndex++;
+    if (nextIndex == 1)
+    {
+        this->parent = nullptr;
+        this->bindings = getPrimitiveEnvironment();
+    }
 }
 
 int Environment::getIndex() const
@@ -51,4 +56,17 @@ shared_ptr<Environment> Environment::getParent() const
 string Environment::toString() const
 {
     return "e_" + to_string(index);
+}
+
+unordered_map<string, shared_ptr<STNode>> getPrimitiveEnvironment()
+{
+    unordered_map<string, shared_ptr<STNode>> primitiveEnvironment;
+    primitiveEnvironment.insert({"Print", make_shared<Function>("Print", 1)});
+    primitiveEnvironment.insert({"Stern", make_shared<Function>("Stern", 1)});
+    primitiveEnvironment.insert({"Stem", make_shared<Function>("Stem", 1)});
+    primitiveEnvironment.insert({"Conc", make_shared<Function>("Conc", 2)});
+    primitiveEnvironment.insert({"Order", make_shared<Function>("Order", 1)});
+    primitiveEnvironment.insert({"Null", make_shared<Function>("Null", 1)});
+
+    return primitiveEnvironment;
 }
