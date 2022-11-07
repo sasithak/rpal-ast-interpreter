@@ -135,12 +135,14 @@ private:
 class Function : public STNode
 {
 public:
-    Function(std::string name);
+    Function(std::string name, int arity);
+    int getArity() const;
     std::string toString() const override;
     std::string getType() const override;
 
 private:
     std::string name;
+    int arity;
 };
 
 class Gamma : public STNode

@@ -325,9 +325,15 @@ string UnaryOperator::getType() const
     return "UnaryOperator";
 }
 
-Function::Function(string name)
+Function::Function(string name, int arity)
 {
     this->name = name;
+    this->arity = arity;
+}
+
+int Function::getArity() const
+{
+    return arity;
 }
 
 string Function::toString() const
