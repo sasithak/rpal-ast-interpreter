@@ -11,10 +11,10 @@ int Environment::nextIndex = 0;
 Environment::Environment()
 {
     this->index = nextIndex++;
-    if (nextIndex == 1)
+    if (this->index == 0)
     {
         this->parent = nullptr;
-        this->bindings = getPrimitiveEnvironment();
+        getPrimitiveEnvironment(this->bindings);
     }
 }
 
@@ -38,16 +38,6 @@ bool Environment::addVariable(string key, shared_ptr<STNode> value)
     return true;
 }
 
-vector<shared_ptr<Environment>> Environment::getChildren() const
-{
-    return children;
-}
-
-void Environment::addChild(shared_ptr<Environment> child)
-{
-    children.push_back(child);
-}
-
 shared_ptr<Environment> Environment::getParent() const
 {
     return parent;
@@ -58,15 +48,23 @@ string Environment::toString() const
     return "e_" + to_string(index);
 }
 
-unordered_map<string, shared_ptr<STNode>> getPrimitiveEnvironment()
+string Environment::getType() const
 {
-    unordered_map<string, shared_ptr<STNode>> primitiveEnvironment;
+    return "Environment";
+}
+
+void getPrimitiveEnvironment(unordered_map<string, shared_ptr<STNode>> &primitiveEnvironment)
+{
     primitiveEnvironment.insert({"Print", make_shared<Function>("Print", 1)});
     primitiveEnvironment.insert({"Stern", make_shared<Function>("Stern", 1)});
     primitiveEnvironment.insert({"Stem", make_shared<Function>("Stem", 1)});
     primitiveEnvironment.insert({"Conc", make_shared<Function>("Conc", 2)});
     primitiveEnvironment.insert({"Order", make_shared<Function>("Order", 1)});
     primitiveEnvironment.insert({"Null", make_shared<Function>("Null", 1)});
-
-    return primitiveEnvironment;
+    primitiveEnvironment.insert({"Isinteger", make_shared<Function>("Isinteger", 1)});
+    primitiveEnvironment.insert({"Isstring", make_shared<Function>("Isstring", 1)});
+    primitiveEnvironment.insert({"Istruthvalue", make_shared<Function>("Istruthvalue", 1)});
+    primitiveEnvironment.insert({"Isfunction", make_shared<Function>("Isfunction", 1)});
+    primitiveEnvironment.insert({"Istuple", make_shared<Function>("Istuple", 1)});
+    primitiveEnvironment.insert({"Isdummy", make_shared<Function>("Isdummy", 1)});
 }
