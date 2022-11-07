@@ -18,12 +18,12 @@ int Environment::getIndex() const
     return index;
 }
 
-shared_ptr<STNode> Environment::getVariable(shared_ptr<Identifier> key) const
+shared_ptr<STNode> Environment::getVariable(string key) const
 {
     return bindings.at(key);
 }
 
-bool Environment::addVariable(shared_ptr<Identifier> key, shared_ptr<STNode> value)
+bool Environment::addVariable(string key, shared_ptr<STNode> value)
 {
     if (bindings.find(key) != bindings.end())
     {
