@@ -8,33 +8,20 @@ using namespace std;
 
 void bind_lambda(shared_ptr<Lambda> l, shared_ptr<STNode> b, shared_ptr<STNode> p)
 {
-    if (b->toString() == ",")
+    if (b->getType() == "Comma")
     {
-        shared_ptr<Identifier> temp = make_shared<Identifier>("Temp");
-        l->addBinding(temp);
         auto children = b->getChildren();
-        int childrenCnt = children.size();
-
-        weak_ptr<Lambda> w_l = l;
-        for (int i = childrenCnt - 1; i >= 0; --i)
+        for (auto child : children)
         {
-            shared_ptr<Gamma> g_1 = make_shared<Gamma>();
-            shared_ptr<Gamma> g_2 = make_shared<Gamma>();
-            shared_ptr<Lambda> l_1 = make_shared<Lambda>();
-
-            g_2->addChild(temp);
-            g_2->addChild(make_shared<Integer>(i + 1));
-            l_1->addBinding(dynamic_pointer_cast<Identifier>(children[i]));
-            w_l.lock()->addChild(g_1);
-            w_l = l_1;
+            l->addBinding(dynamic_pointer_cast<Identifier>(child));
         }
-        w_l.lock()->addChild(p);
     }
     else
     {
         l->addBinding(dynamic_pointer_cast<Identifier>(b));
-        l->addChild(p);
     }
+
+    l->addChild(p);
 }
 
 shared_ptr<ST> AST::standardize() const
@@ -119,10 +106,9 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
         auto e = children[childrenCnt - 1];
 
         shared_ptr<Lambda> l = make_shared<Lambda>();
-        l->addChild(e);
         for (int i = 1; i < childrenCnt - 1; ++i)
         {
-            l->addBinding(dynamic_pointer_cast<Identifier>(children[i]));
+            bind_lambda(l, children[i], e);
         }
 
         shared_ptr<Equal> eq = make_shared<Equal>();
@@ -260,6 +246,16 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
         g->addChild(children[0]);
         g->addChild(children[1]);
         return g;
+    }
+
+    if (this->value == ",")
+    {
+        shared_ptr<Comma> c = make_shared<Comma>();
+        for (auto child : children)
+        {
+            c->addChild(child);
+        }
+        return c;
     }
 
     return nullptr;
