@@ -8,12 +8,45 @@ using namespace std;
 
 shared_ptr<STNode> apply(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand);
 shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> rand_l, shared_ptr<STNode> rand_r);
+shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env);
 
 void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
 {
-    vector<shared_ptr<Environment>> environments;
-    auto e_0 = make_shared<Environment>();
-    environments.push_back(e_0);
+    vector<shared_ptr<STNode>> stack;
+    vector<shared_ptr<STNode>> control;
+
+    shared_ptr<Environment> e_0 = make_shared<Environment>();
+    stack.push_back(e_0);
+    control.push_back(e_0);
+    control.insert(control.end(), controlStructures[0].begin(), controlStructures[0].end());
+
+    shared_ptr<Environment> currentEnvironment = e_0;
+    while (true)
+    {
+        if (control.empty())
+        {
+            break;
+        }
+
+        int controlSize = control.size();
+        shared_ptr<STNode> next = control[controlSize - 1];
+        control.pop_back();
+
+        // CSE Rule 1
+        if (next->getType() == "Identifier")
+        {
+            string name = dynamic_pointer_cast<Identifier>(next)->getName();
+            shared_ptr<STNode> value = lookup(name, currentEnvironment);
+
+            if (value == nullptr)
+            {
+                cout << "Error: Identifier " << name << " is not defined." << endl;
+                exit(EXIT_FAILURE);
+            }
+
+            stack.push_back(value);
+        }
+    }
 }
 
 shared_ptr<STNode> apply(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand)
@@ -225,4 +258,20 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
     {
         return nullptr;
     }
+}
+
+shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env)
+{
+    if (env == nullptr)
+    {
+        return nullptr;
+    }
+
+    shared_ptr<STNode> val = env->getVariable(name);
+    if (val != nullptr)
+    {
+        return val;
+    }
+
+    return lookup(name, env->getParent());
 }
