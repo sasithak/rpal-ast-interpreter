@@ -54,6 +54,79 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
             l->setEnv(currentEnvironment->getIndex());
             stack.push_back(l);
         }
+
+        if (next->getType() == "Gamma")
+        {
+            if (stack.size() < 3)
+            {
+                cout << "Error: Stack underflow." << endl;
+                exit(EXIT_FAILURE);
+            }
+
+            shared_ptr<STNode> rator = stack[stack.size() - 1];
+            shared_ptr<STNode> rand = stack[stack.size() - 2];
+            stack.pop_back();
+            stack.pop_back();
+
+            /**
+             * TODO: Complete Rule 3
+             */
+            // CSE Rule 3
+            if (rator->getType() == "")
+            {
+                // apply(rator, rand);
+            }
+
+            // CSE Rule 4 & CSE Rule 11
+            if (rator->getType() == "Lambda")
+            {
+                shared_ptr<Lambda> l = dynamic_pointer_cast<Lambda>(next);
+                shared_ptr<Environment> newEnv = make_shared<Environment>();
+                shared_ptr<Delta> d = make_shared<Delta>(l->getIndex(), l->getChildren()[0]);
+
+                newEnv->setParent(currentEnvironment);
+
+                int bindingCnt = l->getBindingCount();
+                auto bindings = l->getBindings();
+                if (bindingCnt > 1)
+                {
+                    if (rand->getType() == "Tuple")
+                    {
+                        shared_ptr<Tuple> t = dynamic_pointer_cast<Tuple>(rand);
+                        for (int i = 0; i < bindingCnt; ++i)
+                        {
+                            string name = dynamic_pointer_cast<Identifier>(bindings[i])->getName();
+                            newEnv->addVariable(name, (*t)[i]);
+                        }
+                    }
+                    else
+                    {
+                        string name = dynamic_pointer_cast<Identifier>(bindings[0])->getName();
+                        newEnv->addVariable(name, rand);
+
+                        for (int i = 1; i < bindingCnt; ++i)
+                        {
+                            shared_ptr<STNode> _next = control[control.size() - 1];
+                            string name = dynamic_pointer_cast<Identifier>(bindings[i])->getName();
+                            if (_next->getType() == "Gamma")
+                            {
+                                control.pop_back();
+                                newEnv->addVariable(name, rand);
+                            }
+                            else
+                            {
+                                cout << "Error: parameter '" << name << "' not found\n";
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    string name = dynamic_pointer_cast<Identifier>(bindings[0])->getName();
+                    newEnv->addVariable(name, rand);
+                }
+            }
+        }
     }
 }
 
