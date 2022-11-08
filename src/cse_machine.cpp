@@ -45,6 +45,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
             }
 
             stack.push_back(value);
+            continue;
         }
 
         // CSE Rule 2
@@ -53,6 +54,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
             shared_ptr<Lambda> l = dynamic_pointer_cast<Lambda>(next);
             l->setEnv(currentEnvironment->getIndex());
             stack.push_back(l);
+            continue;
         }
 
         if (next->getType() == "Gamma")
@@ -75,6 +77,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
             if (rator->getType() == "")
             {
                 // apply(rator, rand);
+                // continue;
             }
 
             // CSE Rule 4 & CSE Rule 11
@@ -116,6 +119,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
                             else
                             {
                                 cout << "Error: parameter '" << name << "' not found\n";
+                                exit(EXIT_FAILURE);
                             }
                         }
                     }
@@ -124,6 +128,47 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
                 {
                     string name = dynamic_pointer_cast<Identifier>(bindings[0])->getName();
                     newEnv->addVariable(name, rand);
+                }
+
+                currentEnvironment = newEnv;
+                control.push_back(newEnv);
+                stack.push_back(newEnv);
+                vector<shared_ptr<STNode>> _delta = controlStructures[l->getIndex()];
+                control.insert(control.end(), _delta.begin(), _delta.end());
+                continue;
+            }
+        }
+
+        // CSE Rule 5
+        if (next->getType() == "Environment")
+        {
+            if (stack.size() < 3)
+            {
+                cout << "Error: Stack underflow." << endl;
+                exit(EXIT_FAILURE);
+            }
+
+            shared_ptr<STNode> v = stack[stack.size() - 1];
+            shared_ptr<STNode> e = stack[stack.size() - 2];
+
+            if (e->getType() != "Environment")
+            {
+                cout << "Error: Expected environment." << endl;
+                exit(EXIT_FAILURE);
+            }
+
+            stack.pop_back();
+            stack.pop_back();
+            stack.push_back(v);
+
+            std::shared_ptr<STNode> it;
+            for (int i = stack.size() - 1; i >= 0; --i)
+            {
+                it = stack[i];
+                if (it->getType() == "Environment")
+                {
+                    currentEnvironment = dynamic_pointer_cast<Environment>(it);
+                    break;
                 }
             }
         }
