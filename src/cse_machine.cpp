@@ -46,6 +46,14 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
 
             stack.push_back(value);
         }
+
+        // CSE Rule 2
+        if (next->getType() == "Lambda")
+        {
+            shared_ptr<Lambda> l = dynamic_pointer_cast<Lambda>(next);
+            l->setEnv(currentEnvironment->getIndex());
+            stack.push_back(l);
+        }
     }
 }
 

@@ -164,10 +164,13 @@ public:
     void addBinding(std::shared_ptr<Identifier> binding);
     int getIndex() const;
     void setIndex(int index);
+    int getEnv() const;
+    void setEnv(int env);
 
 private:
     int bindingCount;
     int index;
+    int env;
     std::vector<std::shared_ptr<Identifier>> bindings;
 };
 

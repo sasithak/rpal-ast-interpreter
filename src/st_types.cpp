@@ -364,13 +364,23 @@ Lambda::Lambda()
 {
     this->bindingCount = 0;
     this->index = 0;
+    this->env = -1;
 }
 
 string Lambda::toString() const
 {
-    string s = "lambda";
+    string s = "";
+
+    if (env >= 0)
+    {
+        s += to_string(env) + ".";
+    }
+
+    s += "lambda";
+
     if (index > 0)
         s += "_" + to_string(index);
+
     s += "^";
     if (bindingCount > 1)
     {
@@ -422,6 +432,16 @@ int Lambda::getIndex() const
 void Lambda::setIndex(int index)
 {
     this->index = index;
+}
+
+int Lambda::getEnv() const
+{
+    return env;
+}
+
+void Lambda::setEnv(int env)
+{
+    this->env = env;
 }
 
 Tau::Tau(vector<shared_ptr<STNode>> children)
