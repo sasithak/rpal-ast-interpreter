@@ -15,6 +15,7 @@ public:
     bool addVariable(std::string key, std::shared_ptr<STNode> value);
     std::vector<std::shared_ptr<Environment>> getChildren() const;
     std::shared_ptr<Environment> getParent() const;
+    void setParent(std::shared_ptr<Environment> parent);
     std::string toString() const override;
     std::string getType() const override;
 

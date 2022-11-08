@@ -48,6 +48,11 @@ shared_ptr<Environment> Environment::getParent() const
     return parent;
 }
 
+void Environment::setParent(shared_ptr<Environment> parent)
+{
+    this->parent = parent;
+}
+
 string Environment::toString() const
 {
     return "e_" + to_string(index);
