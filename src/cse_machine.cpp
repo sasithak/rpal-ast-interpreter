@@ -160,6 +160,37 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
                 stack.push_back(value);
                 continue;
             }
+
+            // CSE Rule 11
+            if (rator->getType() == "YStar")
+            {
+                shared_ptr<YStar> y = dynamic_pointer_cast<YStar>(rator);
+
+                if (rand->getType() != "Lambda")
+                {
+                    cout << "Error: Recursion Error." << endl;
+                    exit(EXIT_FAILURE);
+                }
+
+                shared_ptr<Lambda> l = dynamic_pointer_cast<Lambda>(rand);
+                shared_ptr<Eta> e = make_shared<Eta>(l);
+                stack.push_back(e);
+                continue;
+            }
+
+            // CSE Rule 12
+            if (rator->getType() == "Eta")
+            {
+                shared_ptr<Eta> e = dynamic_pointer_cast<Eta>(rator);
+                shared_ptr<Lambda> l = e->getLambda();
+
+                stack.push_back(rand);
+                stack.push_back(e);
+                stack.push_back(l);
+                control.push_back(make_shared<Gamma>());
+                control.push_back(make_shared<Gamma>());
+                continue;
+            }
         }
 
         // CSE Rule 5
