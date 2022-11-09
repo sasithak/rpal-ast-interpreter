@@ -210,6 +210,59 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
             stack.push_back(result);
             continue;
         }
+
+        // CSE Rule 8
+        if (next->getType() == "Beta")
+        {
+            if (stack.size() < 2)
+            {
+                cout << "Error: Stack underflow." << endl;
+                exit(EXIT_FAILURE);
+            }
+
+            shared_ptr<STNode> v = stack[stack.size() - 1];
+            if (v->getType() != "Truth Value")
+            {
+                cout << "Error: Expected truth value." << endl;
+                exit(EXIT_FAILURE);
+            }
+
+            shared_ptr<TruthValue> tv = dynamic_pointer_cast<TruthValue>(v);
+
+            shared_ptr<Beta> beta = dynamic_pointer_cast<Beta>(next);
+            if (control.size() < 3)
+            {
+                cout << "Error: Control underflow." << endl;
+                exit(EXIT_FAILURE);
+            }
+
+            shared_ptr<STNode> _next_1 = control[control.size() - 1];
+            shared_ptr<STNode> _next_2 = control[control.size() - 2];
+            control.pop_back();
+            control.pop_back();
+
+            if (_next_1->getType() != "Delta" || _next_2->getType() != "Delta")
+            {
+                cout << "Error: Expected delta." << endl;
+                exit(EXIT_FAILURE);
+            }
+
+            shared_ptr<Delta> delta_else = dynamic_pointer_cast<Delta>(_next_1);
+            shared_ptr<Delta> delta_then = dynamic_pointer_cast<Delta>(_next_2);
+
+            int delta_index;
+            if (tv->getValue())
+            {
+                delta_index = delta_then->getIndex();
+            }
+            else
+            {
+                delta_index = delta_else->getIndex();
+            }
+
+            control.insert(control.end(), controlStructures[delta_index].begin(), controlStructures[delta_index].end());
+            continue;
+        }
     }
 }
 
