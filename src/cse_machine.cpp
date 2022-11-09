@@ -10,6 +10,8 @@ using namespace std;
 shared_ptr<STNode> apply(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand);
 shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> rand_l, shared_ptr<STNode> rand_r);
 shared_ptr<STNode> apply(shared_ptr<Function> op, vector<shared_ptr<STNode>> rands);
+void applyErr(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand);
+void applyErr(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> rand_l, shared_ptr<STNode> rand_r);
 shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env);
 
 void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, ostream &out)
@@ -433,7 +435,8 @@ shared_ptr<STNode> apply(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand
         }
         else
         {
-            return nullptr;
+            applyErr(unOp, rand);
+            exit(EXIT_FAILURE);
         }
     }
     else if (unOpStr == "neg")
@@ -444,12 +447,14 @@ shared_ptr<STNode> apply(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand
         }
         else
         {
-            return nullptr;
+            applyErr(unOp, rand);
+            exit(EXIT_FAILURE);
         }
     }
     else
     {
-        return nullptr;
+        cerr << "Error: Unknown unary operator." << endl;
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -464,7 +469,8 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         }
         else
         {
-            return nullptr;
+            applyErr(binOp, rand_l, rand_r);
+            exit(EXIT_FAILURE);
         }
     }
     else if (binOpStr == "-")
@@ -475,7 +481,8 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         }
         else
         {
-            return nullptr;
+            applyErr(binOp, rand_l, rand_r);
+            exit(EXIT_FAILURE);
         }
     }
     else if (binOpStr == "*")
@@ -486,7 +493,8 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         }
         else
         {
-            return nullptr;
+            applyErr(binOp, rand_l, rand_r);
+            exit(EXIT_FAILURE);
         }
     }
     else if (binOpStr == "/")
@@ -497,7 +505,8 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         }
         else
         {
-            return nullptr;
+            applyErr(binOp, rand_l, rand_r);
+            exit(EXIT_FAILURE);
         }
     }
     else if (binOpStr == "**")
@@ -508,7 +517,8 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         }
         else
         {
-            return nullptr;
+            applyErr(binOp, rand_l, rand_r);
+            exit(EXIT_FAILURE);
         }
     }
     else if (binOpStr == "aug")
@@ -520,7 +530,8 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         }
         else
         {
-            return nullptr;
+            applyErr(binOp, rand_l, rand_r);
+            exit(EXIT_FAILURE);
         }
     }
     else if (binOpStr == "or")
@@ -531,7 +542,8 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         }
         else
         {
-            return nullptr;
+            applyErr(binOp, rand_l, rand_r);
+            exit(EXIT_FAILURE);
         }
     }
     else if (binOpStr == "&")
@@ -542,7 +554,8 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         }
         else
         {
-            return nullptr;
+            applyErr(binOp, rand_l, rand_r);
+            exit(EXIT_FAILURE);
         }
     }
     else if (binOpStr == "gr")
@@ -553,7 +566,8 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         }
         else
         {
-            return nullptr;
+            applyErr(binOp, rand_l, rand_r);
+            exit(EXIT_FAILURE);
         }
     }
     else if (binOpStr == "ls")
@@ -564,7 +578,8 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         }
         else
         {
-            return nullptr;
+            applyErr(binOp, rand_l, rand_r);
+            exit(EXIT_FAILURE);
         }
     }
     else if (binOpStr == "ge")
@@ -575,7 +590,8 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         }
         else
         {
-            return nullptr;
+            applyErr(binOp, rand_l, rand_r);
+            exit(EXIT_FAILURE);
         }
     }
     else if (binOpStr == "le")
@@ -586,7 +602,8 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         }
         else
         {
-            return nullptr;
+            applyErr(binOp, rand_l, rand_r);
+            exit(EXIT_FAILURE);
         }
     }
     else if (binOpStr == "eq")
@@ -605,7 +622,8 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         }
         else
         {
-            return nullptr;
+            applyErr(binOp, rand_l, rand_r);
+            exit(EXIT_FAILURE);
         }
     }
     else if (binOpStr == "neq")
@@ -624,12 +642,14 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         }
         else
         {
-            return nullptr;
+            applyErr(binOp, rand_l, rand_r);
+            exit(EXIT_FAILURE);
         }
     }
     else
     {
-        return nullptr;
+        cerr << "Error: Unknown binary operator " << binOpStr << endl;
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -783,8 +803,18 @@ shared_ptr<STNode> apply(shared_ptr<Function> op, vector<shared_ptr<STNode>> ran
         }
     }
 
-    cerr << "apply: Unknown function " << opStr << endl;
+    cerr << "Error: Unknown function " << opStr << endl;
     exit(EXIT_FAILURE);
+}
+
+void applyErr(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand)
+{
+    cerr << "Error: Operator " << unOp->toString() << " is not defined for " << rand->getType() << endl;
+}
+
+void applyErr(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> rand_l, shared_ptr<STNode> rand_r)
+{
+    cerr << "Error: Operator " << binOp->toString() << " is not defined for " << rand_l->getType() << " and " << rand_r->getType() << endl;
 }
 
 shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env)
