@@ -175,7 +175,7 @@ string String::getValue() const
 
 string String::toString() const
 {
-    return "'" + value + "'";
+    return value;
 }
 
 string String::getType() const

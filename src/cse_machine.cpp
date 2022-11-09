@@ -206,7 +206,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                     exit(EXIT_FAILURE);
                 }
 
-                int index = dynamic_pointer_cast<Integer>(rand)->getValue();
+                int index = dynamic_pointer_cast<Integer>(rand)->getValue() - 1;
                 shared_ptr<STNode> value = (*t)[index];
                 if (value == nullptr)
                 {

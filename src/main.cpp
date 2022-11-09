@@ -37,6 +37,8 @@ int main(int argc, char *argv[])
     out << endl;
 
     st->execute(out);
+
+    out.close();
     return 0;
 }
 
@@ -54,6 +56,7 @@ vector<string> getTokens(string filename)
     for (string line; getline(_file, line);)
         content.push_back(trim(line));
 
+    _file.close();
     return content;
 }
 

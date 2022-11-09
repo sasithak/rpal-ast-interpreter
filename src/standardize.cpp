@@ -59,11 +59,11 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
     {
         return make_shared<String>(this->value);
     }
-    else if (this->value == "true")
+    else if (this->value == "<true>")
     {
         return make_shared<TruthValue>(true);
     }
-    else if (this->value == "false")
+    else if (this->value == "<false>")
     {
         return make_shared<TruthValue>(false);
     }
