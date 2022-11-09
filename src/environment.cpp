@@ -25,7 +25,7 @@ int Environment::getIndex() const
 
 shared_ptr<STNode> Environment::getVariable(string key) const
 {
-    if (bindings.find(key) != bindings.end())
+    if (bindings.find(key) == bindings.end())
     {
         return nullptr;
     }

@@ -36,6 +36,7 @@ void ST::execute()
         }
         cout << endl;
     }
+    cout << endl;
 
     runCSEMachine(controlStructures);
 }
