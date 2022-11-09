@@ -259,6 +259,10 @@ void Tuple::push_back(shared_ptr<STNode> value)
 
 shared_ptr<STNode> Tuple::operator[](int index) const
 {
+    if (index < 0 || index >= size)
+    {
+        return nullptr;
+    }
     return values[index];
 }
 
@@ -451,6 +455,11 @@ Tau::Tau(vector<shared_ptr<STNode>> children)
     {
         this->addChild(children[i]);
     }
+}
+
+int Tau::getSize() const
+{
+    return n;
 }
 
 string Tau::toString() const

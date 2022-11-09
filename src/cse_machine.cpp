@@ -137,6 +137,29 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
                 control.insert(control.end(), _delta.begin(), _delta.end());
                 continue;
             }
+
+            // CSE Rule 10
+            if (rator->getType() == "Tuple")
+            {
+                shared_ptr<Tuple> t = dynamic_pointer_cast<Tuple>(rator);
+
+                if (rand->getType() != "Integer")
+                {
+                    cout << "Error: Tuple index must be an integer." << endl;
+                    exit(EXIT_FAILURE);
+                }
+
+                int index = dynamic_pointer_cast<Integer>(rand)->getValue();
+                shared_ptr<STNode> value = (*t)[index];
+                if (value == nullptr)
+                {
+                    cout << "Error: Tuple index out of range." << endl;
+                    exit(EXIT_FAILURE);
+                }
+
+                stack.push_back(value);
+                continue;
+            }
         }
 
         // CSE Rule 5
@@ -261,6 +284,29 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
             }
 
             control.insert(control.end(), controlStructures[delta_index].begin(), controlStructures[delta_index].end());
+            continue;
+        }
+
+        // CSE Rule 9
+        if (next->getType() == "Tau")
+        {
+            shared_ptr<Tau> tau = dynamic_pointer_cast<Tau>(next);
+            int n = tau->getSize();
+
+            if (stack.size() <= n)
+            {
+                cout << "Error: Stack underflow." << endl;
+                exit(EXIT_FAILURE);
+            }
+
+            shared_ptr<Tuple> tuple = make_shared<Tuple>();
+            for (int i = 0; i < n; ++i)
+            {
+                tuple->push_back(stack[stack.size() - 1]);
+                stack.pop_back();
+            }
+
+            stack.push_back(tuple);
             continue;
         }
     }

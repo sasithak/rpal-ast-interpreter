@@ -178,6 +178,7 @@ class Tau : public STNode
 {
 public:
     Tau(std::vector<std::shared_ptr<STNode>> children);
+    int getSize() const;
     std::string toString() const override;
     std::string getType() const override;
 
