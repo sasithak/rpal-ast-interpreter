@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <memory>
+#include <string>
 #include <vector>
 #include "st_types.h"
 
@@ -124,7 +125,7 @@ shared_ptr<Integer> Integer::operator/(shared_ptr<Integer> other) const
 
 shared_ptr<Integer> Integer::operator^(shared_ptr<Integer> other) const
 {
-    return make_shared<Integer>(pow(value, other->getValue()));
+    return make_shared<Integer>((int)pow(value, other->getValue()));
 }
 
 shared_ptr<TruthValue> Integer::operator==(shared_ptr<Integer> other) const
@@ -448,6 +449,16 @@ void Lambda::setEnv(int env)
     this->env = env;
 }
 
+shared_ptr<Lambda> Lambda::getCopy() const
+{
+    shared_ptr<Lambda> copy = make_shared<Lambda>();
+    copy->index = index;
+    copy->env = env;
+    copy->bindingCount = bindingCount;
+    copy->bindings = bindings;
+    return copy;
+}
+
 Tau::Tau(vector<shared_ptr<STNode>> children)
 {
     n = children.size();
@@ -588,9 +599,17 @@ string Eta::toString() const
 {
     int index = l->getIndex();
     int bindingCount = l->getBindingCount();
+    int env = l->getEnv();
     auto bindings = l->getBindings();
 
-    string s = "eta";
+    string s = "";
+
+    if (env >= 0)
+    {
+        s += to_string(env) + ".";
+    }
+
+    s += "eta";
     if (index > 0)
         s += "_" + to_string(index);
     s += "^";

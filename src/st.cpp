@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <string>
 #include "st.h"
 
 using namespace std;
@@ -95,7 +96,7 @@ void ST::preOrder(shared_ptr<STNode> node, vector<shared_ptr<STNode>> &controlSt
         if (nodeType == "Lambda")
         {
             dynamic_pointer_cast<Lambda>(node)->setIndex(deltas.size());
-            shared_ptr<Delta> delta = make_shared<Delta>(deltas.size(), node->getChildren()[0]);
+            shared_ptr<Delta> delta = make_shared<Delta>((int)deltas.size(), node->getChildren()[0]);
             deltas.push_back(delta);
             expandChildren = false;
         }

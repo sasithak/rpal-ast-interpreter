@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory>
+#include <string>
 #include <unordered_map>
 #include "environment.h"
 #include "st_types.h"

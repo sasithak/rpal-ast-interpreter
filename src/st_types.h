@@ -166,6 +166,7 @@ public:
     void setIndex(int index);
     int getEnv() const;
     void setEnv(int env);
+    std::shared_ptr<Lambda> getCopy() const;
 
 private:
     int bindingCount;

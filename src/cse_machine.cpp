@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include "environment.h"
 #include "operators.h"
 #include "st.h"
@@ -29,13 +30,15 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
             break;
         }
 
-        out << "Control: ";
+        out << setw(8) << "Control"
+            << ": ";
         for (int i = 0; i < (int)control.size(); ++i)
         {
             out << control[i]->toString() << (i == (int)control.size() - 1 ? "\n" : " ");
         }
 
-        out << "Stack: ";
+        out << setw(8) << "Stack"
+            << ": ";
         for (int i = stack.size() - 1; i >= 0; --i)
         {
             out << stack[i]->toString() << (i == 0 ? "\n" : " ");
@@ -45,7 +48,8 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
         shared_ptr<STNode> next = control[controlSize - 1];
         control.pop_back();
 
-        out << "Next: " << next->toString() << endl;
+        out << setw(8) << "Next"
+            << ": " << next->toString() << endl;
 
         // CSE Rule 1
         if (next->getType() == "Identifier")
@@ -60,17 +64,19 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
             }
 
             stack.push_back(value);
-            out << "Rule: " << 1 << "\n\n";
+            out << setw(8) << "Rule"
+                << ": " << 1 << "\n\n";
             continue;
         }
 
         // CSE Rule 2
         if (next->getType() == "Lambda")
         {
-            shared_ptr<Lambda> l = dynamic_pointer_cast<Lambda>(next);
+            shared_ptr<Lambda> l = dynamic_pointer_cast<Lambda>(next)->getCopy();
             l->setEnv(currentEnvironment->getIndex());
             stack.push_back(l);
-            out << "Rule: " << 2 << "\n\n";
+            out << setw(8) << "Rule"
+                << ": " << 2 << "\n\n";
             continue;
         }
 
@@ -111,7 +117,8 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
 
                 shared_ptr<STNode> result = apply(dynamic_pointer_cast<Function>(rator), rands);
                 stack.push_back(result);
-                out << "Rule: " << 3 << "\n\n";
+                out << setw(8) << "Rule"
+                    << ": " << 3 << "\n\n";
                 continue;
             }
 
@@ -122,9 +129,14 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                 shared_ptr<Environment> newEnv = make_shared<Environment>();
 
                 newEnv->setParent(currentEnvironment);
+                out << setw(8) << "New Env"
+                    << ": " << newEnv->getIndex() << endl;
 
                 int bindingCnt = l->getBindingCount();
                 auto bindings = l->getBindings();
+
+                out << setw(8) << "Bindings"
+                    << ": ";
                 if (bindingCnt > 1)
                 {
                     if (rand->getType() == "Tuple")
@@ -134,6 +146,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                         {
                             string name = dynamic_pointer_cast<Identifier>(bindings[i])->getName();
                             newEnv->addVariable(name, (*t)[i]);
+                            out << "(" << name << " = " << (*t)[i]->toString() << ")" << (i == bindingCnt - 1 ? "\n" : ", ");
                         }
                     }
                     else
@@ -148,7 +161,10 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                             if (_next->getType() == "Gamma")
                             {
                                 control.pop_back();
+                                rand = stack[stack.size() - 1];
+                                stack.pop_back();
                                 newEnv->addVariable(name, rand);
+                                out << "(" << name << " = " << rand->toString() << ")" << (i == bindingCnt - 1 ? "\n" : ", ");
                             }
                             else
                             {
@@ -157,13 +173,16 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                             }
                         }
                     }
-                    out << "Rule: " << 11 << "\n\n";
+                    out << setw(8) << "Rule"
+                        << ": " << 11 << "\n\n";
                 }
                 else
                 {
                     string name = dynamic_pointer_cast<Identifier>(bindings[0])->getName();
                     newEnv->addVariable(name, rand);
-                    out << "Rule: " << 4 << "\n\n";
+                    out << "(" << name << " = " << rand->toString() << ")" << endl;
+                    out << setw(8) << "Rule"
+                        << ": " << 4 << "\n\n";
                 }
 
                 currentEnvironment = newEnv;
@@ -194,7 +213,8 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                 }
 
                 stack.push_back(value);
-                out << "Rule: " << 10 << "\n\n";
+                out << setw(8) << "Rule"
+                    << ": " << 10 << "\n\n";
                 continue;
             }
 
@@ -212,7 +232,8 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                 shared_ptr<Lambda> l = dynamic_pointer_cast<Lambda>(rand);
                 shared_ptr<Eta> e = make_shared<Eta>(l);
                 stack.push_back(e);
-                out << "Rule: " << 11 << "\n\n";
+                out << setw(8) << "Rule"
+                    << ": " << 11 << "\n\n";
                 continue;
             }
 
@@ -227,7 +248,8 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                 stack.push_back(l);
                 control.push_back(make_shared<Gamma>());
                 control.push_back(make_shared<Gamma>());
-                out << "Rule: " << 12 << "\n\n";
+                out << setw(8) << "Rule"
+                    << ": " << 12 << "\n\n";
                 continue;
             }
         }
@@ -265,7 +287,8 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                 }
             }
 
-            out << "Rule: " << 5 << "\n\n";
+            out << setw(8) << "Rule"
+                << ": " << 5 << "\n\n";
             continue;
         }
 
@@ -286,7 +309,8 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
 
             shared_ptr<STNode> result = apply(binOp, rand_l, rand_r);
             stack.push_back(result);
-            out << "Rule: " << 6 << "\n\n";
+            out << setw(8) << "Rule"
+                << ": " << 6 << "\n\n";
             continue;
         }
 
@@ -305,7 +329,8 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
 
             shared_ptr<STNode> result = apply(unOp, rand);
             stack.push_back(result);
-            out << "Rule: " << 7 << "\n\n";
+            out << setw(8) << "Rule"
+                << ": " << 7 << "\n\n";
             continue;
         }
 
@@ -319,15 +344,17 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
             }
 
             shared_ptr<STNode> v = stack[stack.size() - 1];
-            if (v->getType() != "Truth Value")
+            if (v->getType() != "TruthValue")
             {
                 cerr << "Error: Expected truth value." << endl;
                 exit(EXIT_FAILURE);
             }
 
             shared_ptr<TruthValue> tv = dynamic_pointer_cast<TruthValue>(v);
+            stack.pop_back();
 
-            shared_ptr<Beta> beta = dynamic_pointer_cast<Beta>(next);
+            shared_ptr<Beta>
+                beta = dynamic_pointer_cast<Beta>(next);
             if (control.size() < 3)
             {
                 cerr << "Error: Control underflow." << endl;
@@ -359,7 +386,8 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
             }
 
             control.insert(control.end(), controlStructures[delta_index].begin(), controlStructures[delta_index].end());
-            out << "Rule: " << 8 << "\n\n";
+            out << setw(8) << "Rule"
+                << ": " << 8 << "\n\n";
             continue;
         }
 
@@ -383,11 +411,13 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
             }
 
             stack.push_back(tuple);
-            out << "Rule: " << 9 << "\n\n";
+            out << setw(8) << "Rule"
+                << ": " << 9 << "\n\n";
             continue;
         }
 
-        out << "Rule: -\n\n";
+        out << setw(8) << "Rule"
+            << ": 1\n\n";
         stack.push_back(next);
     }
 }
