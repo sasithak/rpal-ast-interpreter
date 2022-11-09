@@ -172,6 +172,44 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
                 }
             }
         }
+
+        // CSE Rule 6
+        if (next->getType() == "BinaryOperator")
+        {
+            if (stack.size() < 3)
+            {
+                cout << "Error: Stack underflow." << endl;
+                exit(EXIT_FAILURE);
+            }
+
+            shared_ptr<BinaryOperator> binOp = dynamic_pointer_cast<BinaryOperator>(next);
+            shared_ptr<STNode> rand_l = stack[stack.size() - 1];
+            shared_ptr<STNode> rand_r = stack[stack.size() - 2];
+            stack.pop_back();
+            stack.pop_back();
+
+            shared_ptr<STNode> result = apply(binOp, rand_l, rand_r);
+            stack.push_back(result);
+            continue;
+        }
+
+        // CSE Rule 7
+        if (next->getType() == "UnaryOperator")
+        {
+            if (stack.size() < 2)
+            {
+                cout << "Error: Stack underflow." << endl;
+                exit(EXIT_FAILURE);
+            }
+
+            shared_ptr<UnaryOperator> unOp = dynamic_pointer_cast<UnaryOperator>(next);
+            shared_ptr<STNode> rand = stack[stack.size() - 1];
+            stack.pop_back();
+
+            shared_ptr<STNode> result = apply(unOp, rand);
+            stack.push_back(result);
+            continue;
+        }
     }
 }
 
