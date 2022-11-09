@@ -639,3 +639,18 @@ int Eta::getIndex() const
 {
     return l->getIndex();
 }
+
+Dummy::Dummy(string value)
+{
+    this->value = value;
+}
+
+string Dummy::toString() const
+{
+    return value;
+}
+
+string Dummy::getType() const
+{
+    return "Dummy";
+}

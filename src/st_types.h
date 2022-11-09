@@ -255,4 +255,15 @@ private:
     std::shared_ptr<Lambda> l;
 };
 
+class Dummy : public STNode
+{
+public:
+    Dummy(std::string value);
+    std::string toString() const override;
+    std::string getType() const override;
+
+private:
+    std::string value;
+};
+
 #endif // ST_TYPES_H

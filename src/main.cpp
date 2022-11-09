@@ -25,15 +25,17 @@ int main(int argc, char *argv[])
     string filename(argv[1]);
     vector<string> tokens = getTokens(filename);
 
+    ofstream out("output.txt");
+
     shared_ptr<AST> ast = AST::createAST(tokens);
-    ast->printAST();
-    cout << endl;
+    out << *ast;
+    out << endl;
 
     shared_ptr<ST> st = ast->standardize();
-    st->printST();
-    cout << endl;
+    out << *st;
+    out << endl;
 
-    st->execute();
+    st->execute(out);
     return 0;
 }
 

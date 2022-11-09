@@ -8,9 +8,10 @@ using namespace std;
 
 shared_ptr<STNode> apply(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand);
 shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> rand_l, shared_ptr<STNode> rand_r);
+shared_ptr<STNode> apply(shared_ptr<Function> op, vector<shared_ptr<STNode>> rands);
 shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env);
 
-void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
+void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, ostream &out)
 {
     vector<shared_ptr<STNode>> stack;
     vector<shared_ptr<STNode>> control;
@@ -28,23 +29,23 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
             break;
         }
 
-        cout << "Control: ";
+        out << "Control: ";
         for (int i = 0; i < (int)control.size(); ++i)
         {
-            cout << control[i]->toString() << (i == (int)control.size() - 1 ? "\n" : " ");
+            out << control[i]->toString() << (i == (int)control.size() - 1 ? "\n" : " ");
         }
 
-        cout << "Stack: ";
+        out << "Stack: ";
         for (int i = stack.size() - 1; i >= 0; --i)
         {
-            cout << stack[i]->toString() << (i == 0 ? "\n" : " ");
+            out << stack[i]->toString() << (i == 0 ? "\n" : " ");
         }
 
         int controlSize = control.size();
         shared_ptr<STNode> next = control[controlSize - 1];
         control.pop_back();
 
-        cout << "Next: " << next->toString() << endl;
+        out << "Next: " << next->toString() << endl;
 
         // CSE Rule 1
         if (next->getType() == "Identifier")
@@ -54,12 +55,12 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
 
             if (value == nullptr)
             {
-                cout << "Error: Identifier " << name << " is not defined." << endl;
+                cerr << "Error: Identifier " << name << " is not defined." << endl;
                 exit(EXIT_FAILURE);
             }
 
             stack.push_back(value);
-            cout << "Rule: " << 1 << "\n\n";
+            out << "Rule: " << 1 << "\n\n";
             continue;
         }
 
@@ -69,7 +70,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
             shared_ptr<Lambda> l = dynamic_pointer_cast<Lambda>(next);
             l->setEnv(currentEnvironment->getIndex());
             stack.push_back(l);
-            cout << "Rule: " << 2 << "\n\n";
+            out << "Rule: " << 2 << "\n\n";
             continue;
         }
 
@@ -77,7 +78,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
         {
             if (stack.size() < 3)
             {
-                cout << "Error: Stack underflow." << endl;
+                cerr << "Error: Stack underflow." << endl;
                 exit(EXIT_FAILURE);
             }
 
@@ -86,15 +87,32 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
             stack.pop_back();
             stack.pop_back();
 
-            /**
-             * TODO: Complete Rule 3
-             */
             // CSE Rule 3
-            if (rator->getType() == "")
+            if (rator->getType() == "Function")
             {
-                // apply(rator, rand);
-                // cout << "Rule: " << 3 << "\n\n";
-                // continue;
+                vector<shared_ptr<STNode>> rands;
+                rands.push_back(rand);
+
+                int arity = dynamic_pointer_cast<Function>(rator)->getArity();
+                if (arity > 1)
+                {
+                    for (int i = 0; i < arity - 1; ++i)
+                    {
+                        if (stack.size() < 2)
+                        {
+                            cerr << "Error: Stack underflow." << endl;
+                            exit(EXIT_FAILURE);
+                        }
+
+                        rands.push_back(stack[stack.size() - 1]);
+                        stack.pop_back();
+                    }
+                }
+
+                shared_ptr<STNode> result = apply(dynamic_pointer_cast<Function>(rator), rands);
+                stack.push_back(result);
+                out << "Rule: " << 3 << "\n\n";
+                continue;
             }
 
             // CSE Rule 4 & CSE Rule 11
@@ -134,18 +152,18 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
                             }
                             else
                             {
-                                cout << "Error: parameter '" << name << "' not found\n";
+                                cerr << "Error: parameter '" << name << "' not found\n";
                                 exit(EXIT_FAILURE);
                             }
                         }
                     }
-                    cout << "Rule: " << 11 << "\n\n";
+                    out << "Rule: " << 11 << "\n\n";
                 }
                 else
                 {
                     string name = dynamic_pointer_cast<Identifier>(bindings[0])->getName();
                     newEnv->addVariable(name, rand);
-                    cout << "Rule: " << 4 << "\n\n";
+                    out << "Rule: " << 4 << "\n\n";
                 }
 
                 currentEnvironment = newEnv;
@@ -163,7 +181,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
 
                 if (rand->getType() != "Integer")
                 {
-                    cout << "Error: Tuple index must be an integer." << endl;
+                    cerr << "Error: Tuple index must be an integer." << endl;
                     exit(EXIT_FAILURE);
                 }
 
@@ -171,12 +189,12 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
                 shared_ptr<STNode> value = (*t)[index];
                 if (value == nullptr)
                 {
-                    cout << "Error: Tuple index out of range." << endl;
+                    cerr << "Error: Tuple index out of range." << endl;
                     exit(EXIT_FAILURE);
                 }
 
                 stack.push_back(value);
-                cout << "Rule: " << 10 << "\n\n";
+                out << "Rule: " << 10 << "\n\n";
                 continue;
             }
 
@@ -187,14 +205,14 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
 
                 if (rand->getType() != "Lambda")
                 {
-                    cout << "Error: Recursion Error." << endl;
+                    cerr << "Error: Recursion Error." << endl;
                     exit(EXIT_FAILURE);
                 }
 
                 shared_ptr<Lambda> l = dynamic_pointer_cast<Lambda>(rand);
                 shared_ptr<Eta> e = make_shared<Eta>(l);
                 stack.push_back(e);
-                cout << "Rule: " << 11 << "\n\n";
+                out << "Rule: " << 11 << "\n\n";
                 continue;
             }
 
@@ -209,7 +227,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
                 stack.push_back(l);
                 control.push_back(make_shared<Gamma>());
                 control.push_back(make_shared<Gamma>());
-                cout << "Rule: " << 12 << "\n\n";
+                out << "Rule: " << 12 << "\n\n";
                 continue;
             }
         }
@@ -217,9 +235,9 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
         // CSE Rule 5
         if (next->getType() == "Environment")
         {
-            if (stack.size() < 3)
+            if (stack.size() < 2)
             {
-                cout << "Error: Stack underflow." << endl;
+                cerr << "Error: Stack underflow." << endl;
                 exit(EXIT_FAILURE);
             }
 
@@ -228,7 +246,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
 
             if (e->getType() != "Environment")
             {
-                cout << "Error: Expected environment." << endl;
+                cerr << "Error: Expected environment." << endl;
                 exit(EXIT_FAILURE);
             }
 
@@ -247,7 +265,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
                 }
             }
 
-            cout << "Rule: " << 5 << "\n\n";
+            out << "Rule: " << 5 << "\n\n";
             continue;
         }
 
@@ -256,7 +274,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
         {
             if (stack.size() < 3)
             {
-                cout << "Error: Stack underflow." << endl;
+                cerr << "Error: Stack underflow." << endl;
                 exit(EXIT_FAILURE);
             }
 
@@ -268,7 +286,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
 
             shared_ptr<STNode> result = apply(binOp, rand_l, rand_r);
             stack.push_back(result);
-            cout << "Rule: " << 6 << "\n\n";
+            out << "Rule: " << 6 << "\n\n";
             continue;
         }
 
@@ -277,7 +295,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
         {
             if (stack.size() < 2)
             {
-                cout << "Error: Stack underflow." << endl;
+                cerr << "Error: Stack underflow." << endl;
                 exit(EXIT_FAILURE);
             }
 
@@ -287,7 +305,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
 
             shared_ptr<STNode> result = apply(unOp, rand);
             stack.push_back(result);
-            cout << "Rule: " << 7 << "\n\n";
+            out << "Rule: " << 7 << "\n\n";
             continue;
         }
 
@@ -296,14 +314,14 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
         {
             if (stack.size() < 2)
             {
-                cout << "Error: Stack underflow." << endl;
+                cerr << "Error: Stack underflow." << endl;
                 exit(EXIT_FAILURE);
             }
 
             shared_ptr<STNode> v = stack[stack.size() - 1];
             if (v->getType() != "Truth Value")
             {
-                cout << "Error: Expected truth value." << endl;
+                cerr << "Error: Expected truth value." << endl;
                 exit(EXIT_FAILURE);
             }
 
@@ -312,7 +330,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
             shared_ptr<Beta> beta = dynamic_pointer_cast<Beta>(next);
             if (control.size() < 3)
             {
-                cout << "Error: Control underflow." << endl;
+                cerr << "Error: Control underflow." << endl;
                 exit(EXIT_FAILURE);
             }
 
@@ -323,7 +341,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
 
             if (_next_1->getType() != "Delta" || _next_2->getType() != "Delta")
             {
-                cout << "Error: Expected delta." << endl;
+                cerr << "Error: Expected delta." << endl;
                 exit(EXIT_FAILURE);
             }
 
@@ -341,7 +359,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
             }
 
             control.insert(control.end(), controlStructures[delta_index].begin(), controlStructures[delta_index].end());
-            cout << "Rule: " << 8 << "\n\n";
+            out << "Rule: " << 8 << "\n\n";
             continue;
         }
 
@@ -353,7 +371,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
 
             if ((int)stack.size() <= n)
             {
-                cout << "Error: Stack underflow." << endl;
+                cerr << "Error: Stack underflow." << endl;
                 exit(EXIT_FAILURE);
             }
 
@@ -365,11 +383,11 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures)
             }
 
             stack.push_back(tuple);
-            cout << "Rule: " << 9 << "\n\n";
+            out << "Rule: " << 9 << "\n\n";
             continue;
         }
 
-        cout << "Rule: -\n\n";
+        out << "Rule: -\n\n";
         stack.push_back(next);
     }
 }
@@ -583,6 +601,160 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
     {
         return nullptr;
     }
+}
+
+shared_ptr<STNode> apply(shared_ptr<Function> op, vector<shared_ptr<STNode>> rands)
+{
+    string opStr = op->toString();
+
+    if (opStr == "Print")
+    {
+        string randStr = rands[0]->toString();
+        cout << randStr << endl;
+        return make_shared<Dummy>(randStr);
+    }
+
+    if (opStr == "Stern")
+    {
+        if (rands[0]->getType() == "String")
+        {
+            return dynamic_pointer_cast<String>(rands[0])->stern();
+        }
+        else
+        {
+            cerr << "Stern: Argument is not a string" << endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    if (opStr == "Stem")
+    {
+        if (rands[0]->getType() == "String")
+        {
+            return dynamic_pointer_cast<String>(rands[0])->stem();
+        }
+        else
+        {
+            cerr << "Stem: Argument is not a string" << endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    if (opStr == "Conc")
+    {
+        if (rands[0]->getType() == "String" && rands[1]->getType() == "String")
+        {
+            return (*dynamic_pointer_cast<String>(rands[0])) + dynamic_pointer_cast<String>(rands[1]);
+        }
+        else
+        {
+            cerr << "Conc: Arguments are not strings" << endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    if (opStr == "Order")
+    {
+        if (rands[0]->getType() == "Tuple")
+        {
+            return make_shared<Integer>(dynamic_pointer_cast<Tuple>(rands[0])->getOrder());
+        }
+        else
+        {
+            cerr << "Order: Argument is not a tuple" << endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    if (opStr == "Null")
+    {
+        if (rands[0]->getType() == "Tuple")
+        {
+            return make_shared<TruthValue>(dynamic_pointer_cast<Tuple>(rands[0])->getOrder() == 0);
+        }
+        else
+        {
+            cerr << "Null: Argument is not a tuple" << endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    if (opStr == "Isinteger")
+    {
+        if (rands[0]->getType() == "Integer")
+        {
+            return make_shared<TruthValue>(true);
+        }
+        else
+        {
+            return make_shared<TruthValue>(false);
+        }
+    }
+
+    if (opStr == "Isstring")
+    {
+        if (rands[0]->getType() == "String")
+        {
+            return make_shared<TruthValue>(true);
+        }
+        else
+        {
+            return make_shared<TruthValue>(false);
+        }
+    }
+
+    if (opStr == "Istruthvalue")
+    {
+        if (rands[0]->getType() == "TruthValue")
+        {
+            return make_shared<TruthValue>(true);
+        }
+        else
+        {
+            return make_shared<TruthValue>(false);
+        }
+    }
+
+    if (opStr == "Isfunction")
+    {
+        string type = rands[0]->getType();
+        if (type == "Function" || type == "UnaryOperator" || type == "BinaryOperator" || type == "Lambda")
+        {
+            return make_shared<TruthValue>(true);
+        }
+        else
+        {
+            return make_shared<TruthValue>(false);
+        }
+    }
+
+    if (opStr == "Istuple")
+    {
+        if (rands[0]->getType() == "Tuple")
+        {
+            return make_shared<TruthValue>(true);
+        }
+        else
+        {
+            return make_shared<TruthValue>(false);
+        }
+    }
+
+    if (opStr == "Isdummy")
+    {
+        if (rands[0]->getType() == "Dummy")
+        {
+            return make_shared<TruthValue>(true);
+        }
+        else
+        {
+            cerr << "Isempty: Argument is not a tuple" << endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    cerr << "apply: Unknown function " << opStr << endl;
+    exit(EXIT_FAILURE);
 }
 
 shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env)
