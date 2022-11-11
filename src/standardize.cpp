@@ -258,6 +258,14 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
         return c;
     }
 
+    if (this->value == "=")
+    {
+        shared_ptr<Equal> eq = make_shared<Equal>();
+        eq->addChild(children[0]);
+        eq->addChild(children[1]);
+        return eq;
+    }
+
     cerr << "Unknown node type: " << this->value << endl;
     exit(EXIT_FAILURE);
 }
