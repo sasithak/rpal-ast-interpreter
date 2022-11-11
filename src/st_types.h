@@ -137,12 +137,19 @@ class Function : public STNode
 public:
     Function(std::string name, int arity);
     int getArity() const;
+    std::vector<std::shared_ptr<STNode>> getArguments() const;
+    void addArgument(std::shared_ptr<STNode> argument);
+    int getArgumentCount() const;
+    bool isFull() const;
+    std::shared_ptr<Function> getCopy() const;
     std::string toString() const override;
     std::string getType() const override;
 
 private:
     std::string name;
     int arity;
+    std::vector<std::shared_ptr<STNode>> arguments;
+    int argumentCount;
 };
 
 class Gamma : public STNode

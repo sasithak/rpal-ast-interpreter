@@ -9,7 +9,7 @@ using namespace std;
 
 shared_ptr<STNode> apply(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand);
 shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> rand_l, shared_ptr<STNode> rand_r);
-shared_ptr<STNode> apply(shared_ptr<Function> op, vector<shared_ptr<STNode>> rands);
+shared_ptr<STNode> apply(shared_ptr<Function> op, shared_ptr<STNode> rand);
 void applyErr(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand);
 void applyErr(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> rand_l, shared_ptr<STNode> rand_r);
 shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env);
@@ -69,6 +69,10 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                 cerr << "Error: Identifier " << name << " is not defined." << endl;
                 exit(EXIT_FAILURE);
             }
+            else if (value->getType() == "Function")
+            {
+                value = dynamic_pointer_cast<Function>(value)->getCopy();
+            }
 
             stack.push_back(value);
             out << setw(8) << "Rule"
@@ -108,40 +112,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
             // CSE Rule 3
             if (rator->getType() == "Function")
             {
-                vector<shared_ptr<STNode>> rands;
-                rands.push_back(rand);
-
-                int arity = dynamic_pointer_cast<Function>(rator)->getArity();
-                if (arity > 1)
-                {
-                    for (int i = 0; i < arity - 1; ++i)
-                    {
-                        if (stack.size() < 2)
-                        {
-                            stackUflowErr();
-                        }
-
-                        shared_ptr<STNode> _g = control[control.size() - 1];
-                        if (_g->getType() != "Gamma")
-                        {
-                            cerr << "Error: Invalid application of " << rator->toString() << endl;
-                            exit(EXIT_FAILURE);
-                        }
-                        control.pop_back();
-
-                        rand = stack[stack.size() - 1];
-
-                        if (rand->getType() == "Environment")
-                        {
-                            stackUflowErr();
-                        }
-
-                        rands.push_back(rand);
-                        stack.pop_back();
-                    }
-                }
-
-                shared_ptr<STNode> result = apply(dynamic_pointer_cast<Function>(rator), rands);
+                shared_ptr<STNode> result = apply(dynamic_pointer_cast<Function>(rator), rand);
                 stack.push_back(result);
                 out << setw(8) << "Rule"
                     << ": " << 3 << "\n\n";
@@ -715,9 +686,17 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
     }
 }
 
-shared_ptr<STNode> apply(shared_ptr<Function> op, vector<shared_ptr<STNode>> rands)
+shared_ptr<STNode> apply(shared_ptr<Function> op, shared_ptr<STNode> rand)
 {
+    op->addArgument(rand);
+
+    if (!op->isFull())
+    {
+        return op;
+    }
+
     string opStr = op->toString();
+    vector<shared_ptr<STNode>> rands = op->getArguments();
 
     if (opStr == "Print")
     {

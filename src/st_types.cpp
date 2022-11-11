@@ -334,11 +334,38 @@ Function::Function(string name, int arity)
 {
     this->name = name;
     this->arity = arity;
+    this->argumentCount = 0;
 }
 
 int Function::getArity() const
 {
     return arity;
+}
+
+vector<shared_ptr<STNode>> Function::getArguments() const
+{
+    return arguments;
+}
+
+void Function::addArgument(shared_ptr<STNode> argument)
+{
+    arguments.push_back(argument);
+    ++argumentCount;
+}
+
+int Function::getArgumentCount() const
+{
+    return argumentCount;
+}
+
+bool Function::isFull() const
+{
+    return argumentCount == arity;
+}
+
+shared_ptr<Function> Function::getCopy() const
+{
+    return make_shared<Function>(name, arity);
 }
 
 string Function::toString() const
