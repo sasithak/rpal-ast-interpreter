@@ -31,13 +31,15 @@ void ST::execute(ostream &out)
     for (int i = 0; i < (int)controlStructures.size(); ++i)
     {
         out << right << setw(width) << ("delta_" + to_string(i)) << left << ": ";
+        int ith_size = controlStructures[i].size();
         for (int j = 0; j < (int)controlStructures[i].size(); ++j)
         {
-            out << controlStructures[i][j]->toString() << (j == (int)controlStructures[i].size() - 1 ? "" : " ");
+            shared_ptr<STNode> node = controlStructures[i][j];
+            out << (node->getType() == "String" ? "'" + node->toString() + "'" : node->toString())
+                << (j == ith_size - 1 ? "\n" : " ");
         }
-        out << endl;
     }
-    out << endl;
+    out << "\n";
 
     runCSEMachine(controlStructures, out);
 }
@@ -65,7 +67,7 @@ void ST::preOrder(shared_ptr<STNode> node, int level, ostream &os) const
         os << ".";
     }
 
-    os << node->toCompleteString() << endl;
+    os << node->toCompleteString() << "\n";
 
     if (node->getType() == "Arrow")
     {

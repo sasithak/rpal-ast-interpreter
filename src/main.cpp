@@ -13,13 +13,13 @@ int main(int argc, char *argv[])
 {
     if (argc < 2)
     {
-        cerr << "No input file specified" << endl;
+        cerr << "No input file specified\n";
         return 1;
     }
 
     if (argc > 2)
     {
-        cerr << "Too many arguments" << endl;
+        cerr << "Too many arguments\n";
         return 1;
     }
 
@@ -30,11 +30,11 @@ int main(int argc, char *argv[])
 
     shared_ptr<AST> ast = AST::createAST(tokens);
     out << *ast;
-    out << endl;
+    out << "\n";
 
     shared_ptr<ST> st = ast->standardize();
     out << *st;
-    out << endl;
+    out << "\n";
 
     st->execute(out);
 
@@ -49,7 +49,7 @@ vector<string> getTokens(string filename)
 
     if (!_file)
     {
-        cerr << "File not found: " + filename << endl;
+        cerr << "File not found: " + filename << "\n";
         exit(EXIT_FAILURE);
     }
 

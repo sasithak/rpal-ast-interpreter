@@ -84,7 +84,7 @@ shared_ptr<AST> AST::createAST(vector<string> tokens)
 
     if (ast == nullptr)
     {
-        cout << "Error: Could not create AST" << endl;
+        cout << "Error: Could not create AST\n";
         return nullptr;
     }
 
@@ -97,7 +97,7 @@ shared_ptr<AST> AST::createAST(vector<string> tokens)
 
         if (node == nullptr)
         {
-            cout << "Error: Could not create ASTNode" << endl;
+            cout << "Error: Could not create ASTNode\n";
             return nullptr;
         }
 
@@ -162,7 +162,7 @@ void AST::preOrder(shared_ptr<ASTNode> node, int level, ostream &os) const
         os << ".";
     }
 
-    os << *node << endl;
+    os << *node << "\n";
 
     for (int i = 0; i < (int)node->children.size(); i++)
     {
@@ -174,7 +174,7 @@ ostream &operator<<(ostream &os, const AST &ast)
 {
     if (ast.root == nullptr)
     {
-        os << "Error: AST is empty" << endl;
+        os << "Error: AST is empty\n";
         return os;
     }
 

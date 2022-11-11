@@ -56,7 +56,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
         control.pop_back();
 
         out << setw(8) << "Next"
-            << ": " << (next->getType() == "String" ? ("'" + next->toString() + "'") : next->toString()) << endl;
+            << ": " << (next->getType() == "String" ? ("'" + next->toString() + "'") : next->toString()) << "\n";
 
         // CSE Rule 1
         if (next->getType() == "Identifier")
@@ -66,7 +66,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
 
             if (value == nullptr)
             {
-                cerr << "Error: Identifier " << name << " is not defined." << endl;
+                cerr << "Error: Identifier " << name << " is not defined.\n";
                 exit(EXIT_FAILURE);
             }
             else if (value->getType() == "Function")
@@ -127,7 +127,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
 
                 newEnv->setParent(envs[l->getEnv()]);
                 out << setw(8) << "New Env"
-                    << ": " << newEnv->getIndex() << endl;
+                    << ": " << newEnv->getIndex() << "\n";
 
                 envs.push_back(newEnv);
 
@@ -185,7 +185,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                 {
                     string name = dynamic_pointer_cast<Identifier>(bindings[0])->getName();
                     newEnv->addVariable(name, rand);
-                    out << "(" << name << " = " << rand->toString() << ")" << endl;
+                    out << "(" << name << " = " << rand->toString() << ")\n";
                     out << setw(8) << "Rule"
                         << ": " << 4 << "\n\n";
                 }
@@ -205,7 +205,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
 
                 if (rand->getType() != "Integer")
                 {
-                    cerr << "Error: Tuple index must be an integer." << endl;
+                    cerr << "Error: Tuple index must be an integer.\n";
                     exit(EXIT_FAILURE);
                 }
 
@@ -213,7 +213,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                 shared_ptr<STNode> value = (*t)[index];
                 if (value == nullptr)
                 {
-                    cerr << "Error: Tuple index out of range." << endl;
+                    cerr << "Error: Tuple index out of range.\n";
                     exit(EXIT_FAILURE);
                 }
 
@@ -230,7 +230,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
 
                 if (rand->getType() != "Lambda")
                 {
-                    cerr << "Error: Recursion Error." << endl;
+                    cerr << "Error: Recursion Error.\n";
                     exit(EXIT_FAILURE);
                 }
 
@@ -264,8 +264,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
         {
             if (stack.size() < 2)
             {
-                cerr << "Error: Stack underflow." << endl;
-                exit(EXIT_FAILURE);
+                stackUflowErr();
             }
 
             shared_ptr<STNode> v = stack[stack.size() - 1];
@@ -278,7 +277,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
 
             if (e->getType() != "Environment")
             {
-                cerr << "Error: Expected environment." << endl;
+                cerr << "Error: Expected environment.\n";
                 exit(EXIT_FAILURE);
             }
 
@@ -307,8 +306,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
         {
             if (stack.size() < 3)
             {
-                cerr << "Error: Stack underflow." << endl;
-                exit(EXIT_FAILURE);
+                stackUflowErr();
             }
 
             shared_ptr<BinaryOperator> binOp = dynamic_pointer_cast<BinaryOperator>(next);
@@ -335,8 +333,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
         {
             if (stack.size() < 2)
             {
-                cerr << "Error: Stack underflow." << endl;
-                exit(EXIT_FAILURE);
+                stackUflowErr();
             }
 
             shared_ptr<UnaryOperator> unOp = dynamic_pointer_cast<UnaryOperator>(next);
@@ -361,8 +358,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
         {
             if (stack.size() < 2)
             {
-                cerr << "Error: Stack underflow." << endl;
-                exit(EXIT_FAILURE);
+                stackUflowErr();
             }
 
             shared_ptr<STNode> v = stack[stack.size() - 1];
@@ -374,7 +370,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
 
             if (v->getType() != "TruthValue")
             {
-                cerr << "Error: Expected truth value." << endl;
+                cerr << "Error: Expected truth value.\n";
                 exit(EXIT_FAILURE);
             }
 
@@ -385,7 +381,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                 beta = dynamic_pointer_cast<Beta>(next);
             if (control.size() < 3)
             {
-                cerr << "Error: Control underflow." << endl;
+                cerr << "Error: Control underflow.\n";
                 exit(EXIT_FAILURE);
             }
 
@@ -396,7 +392,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
 
             if (_next_1->getType() != "Delta" || _next_2->getType() != "Delta")
             {
-                cerr << "Error: Expected delta." << endl;
+                cerr << "Error: Expected delta.\n";
                 exit(EXIT_FAILURE);
             }
 
@@ -427,8 +423,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
 
             if ((int)stack.size() <= n)
             {
-                cerr << "Error: Stack underflow." << endl;
-                exit(EXIT_FAILURE);
+                stackUflowErr();
             }
 
             shared_ptr<Tuple> tuple = make_shared<Tuple>();
@@ -493,7 +488,7 @@ shared_ptr<STNode> apply(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand
     }
     else
     {
-        cerr << "Error: Unknown unary operator." << endl;
+        cerr << "Error: Unknown unary operator.\n";
         exit(EXIT_FAILURE);
     }
 }
@@ -708,7 +703,7 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
     }
     else
     {
-        cerr << "Error: Unknown binary operator " << binOpStr << endl;
+        cerr << "Error: Unknown binary operator " << binOpStr << "\n";
         exit(EXIT_FAILURE);
     }
 }
@@ -728,7 +723,7 @@ shared_ptr<STNode> apply(shared_ptr<Function> op, shared_ptr<STNode> rand)
     if (opStr == "Print")
     {
         string randStr = rands[0]->toString();
-        cout << randStr << endl;
+        cout << randStr << "\n";
         return make_shared<Dummy>(randStr);
     }
 
@@ -740,7 +735,7 @@ shared_ptr<STNode> apply(shared_ptr<Function> op, shared_ptr<STNode> rand)
         }
         else
         {
-            cerr << "Stern: Argument is not a string" << endl;
+            cerr << "Stern: Argument is not a string\n";
             exit(EXIT_FAILURE);
         }
     }
@@ -753,7 +748,7 @@ shared_ptr<STNode> apply(shared_ptr<Function> op, shared_ptr<STNode> rand)
         }
         else
         {
-            cerr << "Stem: Argument is not a string" << endl;
+            cerr << "Stem: Argument is not a string\n";
             exit(EXIT_FAILURE);
         }
     }
@@ -766,7 +761,7 @@ shared_ptr<STNode> apply(shared_ptr<Function> op, shared_ptr<STNode> rand)
         }
         else
         {
-            cerr << "Conc: Arguments are not strings" << endl;
+            cerr << "Conc: Arguments are not strings\n";
             exit(EXIT_FAILURE);
         }
     }
@@ -779,7 +774,7 @@ shared_ptr<STNode> apply(shared_ptr<Function> op, shared_ptr<STNode> rand)
         }
         else
         {
-            cerr << "Order: Argument is not a tuple" << endl;
+            cerr << "Order: Argument is not a tuple\n";
             exit(EXIT_FAILURE);
         }
     }
@@ -792,7 +787,7 @@ shared_ptr<STNode> apply(shared_ptr<Function> op, shared_ptr<STNode> rand)
         }
         else
         {
-            cerr << "Null: Argument is not a tuple" << endl;
+            cerr << "Null: Argument is not a tuple\n";
             exit(EXIT_FAILURE);
         }
     }
@@ -866,23 +861,23 @@ shared_ptr<STNode> apply(shared_ptr<Function> op, shared_ptr<STNode> rand)
         }
         else
         {
-            cerr << "Isempty: Argument is not a tuple" << endl;
+            cerr << "Isempty: Argument is not a tuple\n";
             exit(EXIT_FAILURE);
         }
     }
 
-    cerr << "Error: Unknown function " << opStr << endl;
+    cerr << "Error: Unknown function " << opStr << "\n";
     exit(EXIT_FAILURE);
 }
 
 void applyErr(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand)
 {
-    cerr << "Error: Operator " << unOp->toString() << " is not defined for " << rand->getType() << endl;
+    cerr << "Error: Operator " << unOp->toString() << " is not defined for " << rand->getType() << "\n";
 }
 
 void applyErr(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> rand_l, shared_ptr<STNode> rand_r)
 {
-    cerr << "Error: Operator " << binOp->toString() << " is not defined for " << rand_l->getType() << " and " << rand_r->getType() << endl;
+    cerr << "Error: Operator " << binOp->toString() << " is not defined for " << rand_l->getType() << " and " << rand_r->getType() << "\n";
 }
 
 shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env)
@@ -903,6 +898,6 @@ shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env)
 
 void stackUflowErr()
 {
-    cerr << "Error: Stack underflow" << endl;
+    cerr << "Error: Stack underflow\n";
     exit(EXIT_FAILURE);
 }

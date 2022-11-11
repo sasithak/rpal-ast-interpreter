@@ -266,6 +266,6 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
         return eq;
     }
 
-    cerr << "Unknown node type: " << this->value << endl;
+    cerr << "Unknown node type: " << this->value << "\n";
     exit(EXIT_FAILURE);
 }
