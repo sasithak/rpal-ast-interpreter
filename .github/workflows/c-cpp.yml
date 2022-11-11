@@ -16,6 +16,8 @@ jobs:
         run: sudo apt install -y libcppunit-dev
       - name: change directory
         run: cd src
+      - name: pwd
+        run: pwd
       - name: make
         run: make
       - name: make test
