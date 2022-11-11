@@ -15,7 +15,7 @@ public:
     virtual std::string getType() const = 0;
     friend std::ostream &operator<<(std::ostream &os, const STNode &node);
 
-private:
+protected:
     std::vector<std::shared_ptr<STNode>> children;
 };
 
@@ -90,6 +90,7 @@ public:
     Tuple(std::vector<std::shared_ptr<STNode>> values);
     std::vector<std::shared_ptr<STNode>> getValues() const;
     int getOrder() const;
+    std::shared_ptr<Tuple> getCopy() const;
     std::string toString() const override;
     std::string toCompleteString() const override;
     std::string getType() const override;
@@ -170,6 +171,7 @@ class Lambda : public STNode
 {
 public:
     Lambda();
+    std::shared_ptr<Lambda> getCopy() const;
     std::string toString() const override;
     std::string toCompleteString() const override;
     std::string getType() const override;
@@ -180,7 +182,6 @@ public:
     void setIndex(int index);
     int getEnv() const;
     void setEnv(int env);
-    std::shared_ptr<Lambda> getCopy() const;
 
 private:
     int bindingCount;

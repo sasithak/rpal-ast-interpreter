@@ -453,6 +453,13 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
 
         out << setw(8) << "Rule"
             << ": 1\n\n";
+
+        if (next->getType() == "Tuple")
+        {
+            stack.push_back(dynamic_pointer_cast<Tuple>(next)->getCopy());
+            continue;
+        }
+
         stack.push_back(next);
     }
 }

@@ -249,6 +249,32 @@ int Tuple::getOrder() const
     return size;
 }
 
+shared_ptr<Tuple> Tuple::getCopy() const
+{
+    shared_ptr<Tuple> t = make_shared<Tuple>();
+    for (auto value : values)
+    {
+        string valueStr = value->getType();
+        if (valueStr == "Tuple")
+        {
+            t->push_back(dynamic_pointer_cast<Tuple>(value)->getCopy());
+        }
+        else if (valueStr == "Function")
+        {
+            t->push_back(dynamic_pointer_cast<Function>(value)->getCopy());
+        }
+        else if (valueStr == "Lambda")
+        {
+            t->push_back(dynamic_pointer_cast<Lambda>(value)->getCopy());
+        }
+        else
+        {
+            t->push_back(value);
+        }
+    }
+    return t;
+}
+
 string Tuple::toString() const
 {
     if (size == 0)
@@ -442,6 +468,16 @@ Lambda::Lambda()
     this->env = -1;
 }
 
+shared_ptr<Lambda> Lambda::getCopy() const
+{
+    shared_ptr<Lambda> copy = make_shared<Lambda>();
+    copy->index = index;
+    copy->env = env;
+    copy->bindingCount = bindingCount;
+    copy->bindings = bindings;
+    return copy;
+}
+
 string Lambda::toString() const
 {
     string s = "";
@@ -522,16 +558,6 @@ int Lambda::getEnv() const
 void Lambda::setEnv(int env)
 {
     this->env = env;
-}
-
-shared_ptr<Lambda> Lambda::getCopy() const
-{
-    shared_ptr<Lambda> copy = make_shared<Lambda>();
-    copy->index = index;
-    copy->env = env;
-    copy->bindingCount = bindingCount;
-    copy->bindings = bindings;
-    return copy;
 }
 
 Tau::Tau(vector<shared_ptr<STNode>> children)
