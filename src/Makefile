@@ -10,4 +10,4 @@ check:
 	make && python3 run_tests.py
 
 test:
-	make && g++ runTests.cpp -lcppunit -o test && ./test
+	g++ runTests.cpp -lcppunit -o test && ./test
