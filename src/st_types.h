@@ -174,7 +174,7 @@ public:
     std::shared_ptr<Lambda> getCopy() const;
     std::string toString() const override;
     std::string toCompleteString() const override;
-    std::string getType() const override;
+    virtual std::string getType() const override;
     int getBindingCount() const;
     std::vector<std::shared_ptr<Identifier>> getBindings() const;
     void addBinding(std::shared_ptr<Identifier> binding);
@@ -183,7 +183,7 @@ public:
     int getEnv() const;
     void setEnv(int env);
 
-private:
+protected:
     int bindingCount;
     int index;
     int env;
@@ -285,6 +285,21 @@ public:
 
 private:
     std::string value;
+};
+
+class IncompleteLambda : public Lambda
+{
+public:
+    IncompleteLambda(std::shared_ptr<Lambda> l);
+    void addArgument(std::shared_ptr<STNode> argument);
+    std::vector<std::shared_ptr<STNode>> getArguments() const;
+    int getArgumentCount() const;
+    bool isComplete() const;
+    std::string getType() const override;
+
+private:
+    std::vector<std::shared_ptr<STNode>> arguments;
+    int argumentCount;
 };
 
 #endif // ST_TYPES_H

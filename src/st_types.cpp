@@ -799,3 +799,38 @@ string Dummy::getType() const
 {
     return "Dummy";
 }
+
+IncompleteLambda::IncompleteLambda(shared_ptr<Lambda> l)
+{
+    this->bindingCount = l->getBindingCount();
+    this->bindings = l->getBindings();
+    this->index = l->getIndex();
+    this->env = l->getEnv();
+    this->argumentCount = 0;
+}
+
+void IncompleteLambda::addArgument(shared_ptr<STNode> argument)
+{
+    arguments.push_back(argument);
+    ++argumentCount;
+}
+
+vector<shared_ptr<STNode>> IncompleteLambda::getArguments() const
+{
+    return arguments;
+}
+
+int IncompleteLambda::getArgumentCount() const
+{
+    return argumentCount;
+}
+
+bool IncompleteLambda::isComplete() const
+{
+    return argumentCount == bindingCount;
+}
+
+string IncompleteLambda::getType() const
+{
+    return "IncompleteLambda";
+}
