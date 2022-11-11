@@ -72,6 +72,18 @@ class TestMyrpal(unittest.TestCase):
         self.assertEqual(stderr, '')
         self.assertEqual(ret_code, 0)
 
+    def test_11(self):
+        stdout, stderr, ret_code = runTest('test_11')
+        self.assertEqual(stdout, '9')
+        self.assertEqual(stderr, '')
+        self.assertEqual(ret_code, 0)
+
+    def test_12(self):
+        stdout, stderr, ret_code = runTest('test_12')
+        self.assertEqual(stdout, '14')
+        self.assertEqual(stderr, '')
+        self.assertEqual(ret_code, 0)
+
 
 if __name__ == '__main__':
     unittest.main()
