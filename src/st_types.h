@@ -11,6 +11,7 @@ public:
     void addChild(std::shared_ptr<STNode> child);
     std::vector<std::shared_ptr<STNode>> getChildren();
     virtual std::string toString() const = 0;
+    virtual std::string toCompleteString() const;
     virtual std::string getType() const = 0;
     friend std::ostream &operator<<(std::ostream &os, const STNode &node);
 
@@ -25,6 +26,7 @@ public:
     TruthValue(bool value);
     bool getValue() const;
     std::string toString() const override;
+    std::string toCompleteString() const override;
     std::string getType() const override;
     std::shared_ptr<TruthValue> operator&&(std::shared_ptr<TruthValue> other) const;
     std::shared_ptr<TruthValue> operator||(std::shared_ptr<TruthValue> other) const;
@@ -43,6 +45,7 @@ public:
     Integer(int value);
     int getValue() const;
     std::string toString() const override;
+    std::string toCompleteString() const override;
     std::string getType() const override;
     std::shared_ptr<Integer> negate() const;
     std::shared_ptr<Integer> operator+(std::shared_ptr<Integer> other) const;
@@ -68,6 +71,7 @@ public:
     String(const char &value);
     std::string getValue() const;
     std::string toString() const override;
+    std::string toCompleteString() const override;
     std::string getType() const override;
     std::shared_ptr<TruthValue> operator==(std::shared_ptr<String> other) const;
     std::shared_ptr<TruthValue> operator!=(std::shared_ptr<String> other) const;
@@ -87,6 +91,7 @@ public:
     std::vector<std::shared_ptr<STNode>> getValues() const;
     int getOrder() const;
     std::string toString() const override;
+    std::string toCompleteString() const override;
     std::string getType() const override;
     void push_back(std::shared_ptr<STNode> value);
     std::shared_ptr<STNode> operator[](int index) const;
@@ -102,6 +107,7 @@ public:
     Identifier(std::string name);
     std::string getName() const;
     std::string toString() const override;
+    std::string toCompleteString() const override;
     std::string getType() const override;
 
 private:
@@ -165,6 +171,7 @@ class Lambda : public STNode
 public:
     Lambda();
     std::string toString() const override;
+    std::string toCompleteString() const override;
     std::string getType() const override;
     int getBindingCount() const;
     std::vector<std::shared_ptr<Identifier>> getBindings() const;
@@ -188,6 +195,7 @@ public:
     Tau(std::vector<std::shared_ptr<STNode>> children);
     int getSize() const;
     std::string toString() const override;
+    std::string toCompleteString() const override;
     std::string getType() const override;
 
 private:
@@ -208,6 +216,7 @@ public:
     Delta(std::shared_ptr<STNode> child);
     Delta(int index, std::shared_ptr<STNode> child);
     std::string toString() const override;
+    std::string toCompleteString() const override;
     std::string getType() const override;
     void setIndex(int index);
     int getIndex() const;
@@ -245,6 +254,7 @@ class YStar : public STNode
 public:
     YStar();
     std::string toString() const override;
+    std::string toCompleteString() const override;
     std::string getType() const override;
 };
 
@@ -253,6 +263,7 @@ class Eta : public STNode
 public:
     Eta(std::shared_ptr<Lambda> l);
     std::string toString() const override;
+    std::string toCompleteString() const override;
     std::string getType() const override;
     std::shared_ptr<Lambda> getLambda() const;
     int getBindingCount() const;
@@ -268,6 +279,7 @@ class Dummy : public STNode
 public:
     Dummy(std::string value);
     std::string toString() const override;
+    std::string toCompleteString() const override;
     std::string getType() const override;
 
 private:

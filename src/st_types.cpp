@@ -17,6 +17,11 @@ vector<shared_ptr<STNode>> STNode::getChildren()
     return children;
 }
 
+string STNode::toCompleteString() const
+{
+    return toString();
+}
+
 ostream &operator<<(ostream &os, const STNode &node)
 {
     os << node.toString();
@@ -41,6 +46,11 @@ bool TruthValue::getValue() const
 string TruthValue::toString() const
 {
     return value ? "true" : "false";
+}
+
+string TruthValue::toCompleteString() const
+{
+    return value ? "<true>" : "<false>";
 }
 
 string TruthValue::getType() const
@@ -91,6 +101,11 @@ int Integer::getValue() const
 string Integer::toString() const
 {
     return to_string(value);
+}
+
+string Integer::toCompleteString() const
+{
+    return "<INT:" + to_string(value) + ">";
 }
 
 string Integer::getType() const
@@ -178,6 +193,11 @@ string String::toString() const
     return value;
 }
 
+string String::toCompleteString() const
+{
+    return "<STR:'" + value + "'>";
+}
+
 string String::getType() const
 {
     return "String";
@@ -247,6 +267,24 @@ string Tuple::toString() const
     return str;
 }
 
+string Tuple::toCompleteString() const
+{
+    if (size == 0)
+        return "<nil>";
+
+    string str = "(";
+    for (int i = 0; i < size; ++i)
+    {
+        str += values[i]->toCompleteString();
+        if (i != size - 1)
+        {
+            str += ", ";
+        }
+    }
+    str += ")";
+    return str;
+}
+
 string Tuple::getType() const
 {
     return "Tuple";
@@ -280,6 +318,11 @@ string Identifier::getName() const
 string Identifier::toString() const
 {
     return name;
+}
+
+string Identifier::toCompleteString() const
+{
+    return "<ID:" + name + ">";
 }
 
 string Identifier::getType() const
@@ -435,6 +478,11 @@ string Lambda::toString() const
     return s;
 }
 
+string Lambda::toCompleteString() const
+{
+    return "lambda";
+}
+
 string Lambda::getType() const
 {
     return "Lambda";
@@ -505,6 +553,11 @@ string Tau::toString() const
     return "tau_" + to_string(n);
 }
 
+string Tau::toCompleteString() const
+{
+    return "tau";
+}
+
 string Tau::getType() const
 {
     return "Tau";
@@ -544,6 +597,11 @@ Delta::Delta(int index, shared_ptr<STNode> child)
 string Delta::toString() const
 {
     return "delta" + (index >= 0 ? "_" + to_string(index) : "");
+}
+
+string Delta::toCompleteString() const
+{
+    return "delta";
 }
 
 string Delta::getType() const
@@ -612,6 +670,11 @@ string YStar::toString() const
     return "Y";
 }
 
+string YStar::toCompleteString() const
+{
+    return "<Y*>";
+}
+
 string YStar::getType() const
 {
     return "YStar";
@@ -661,6 +724,11 @@ string Eta::toString() const
     return s;
 }
 
+string Eta::toCompleteString() const
+{
+    return "eta";
+}
+
 string Eta::getType() const
 {
     return "Eta";
@@ -693,7 +761,12 @@ Dummy::Dummy(string value)
 
 string Dummy::toString() const
 {
-    return value;
+    return "dummy_" + value;
+}
+
+string Dummy::toCompleteString() const
+{
+    return "dummy";
 }
 
 string Dummy::getType() const

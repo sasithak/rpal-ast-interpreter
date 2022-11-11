@@ -65,14 +65,7 @@ void ST::preOrder(shared_ptr<STNode> node, int level, ostream &os) const
         os << ".";
     }
 
-    if (node->getType() == "String")
-    {
-        os << "'" << *node << "'" << endl;
-    }
-    else
-    {
-        os << *node << endl;
-    }
+    os << node->toCompleteString() << endl;
 
     if (node->getType() == "Arrow")
     {
@@ -80,6 +73,32 @@ void ST::preOrder(shared_ptr<STNode> node, int level, ostream &os) const
         preOrder(children[3], level + 1, os);
         preOrder(children[0]->getChildren()[0], level + 1, os);
         preOrder(children[1]->getChildren()[0], level + 1, os);
+    }
+    else if (node->getType() == "Lambda")
+    {
+        shared_ptr<Lambda> l = dynamic_pointer_cast<Lambda>(node);
+        auto children = l->getChildren();
+        auto bindings = l->getBindings();
+        int bindingCount = l->getBindingCount();
+
+        if (bindingCount == 1)
+        {
+            preOrder(bindings[0], level + 1, os);
+        }
+        else if (bindingCount > 1)
+        {
+            shared_ptr<STNode> c = make_shared<Comma>();
+            for (int i = 0; i < bindingCount; ++i)
+            {
+                c->addChild(bindings[i]);
+            }
+            preOrder(c, level + 1, os);
+        }
+
+        for (auto child : children)
+        {
+            preOrder(child, level + 1, os);
+        }
     }
     else
     {
