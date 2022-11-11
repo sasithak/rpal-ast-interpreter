@@ -18,10 +18,12 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
 {
     vector<shared_ptr<STNode>> stack;
     vector<shared_ptr<STNode>> control;
+    vector<shared_ptr<Environment>> envs;
 
     shared_ptr<Environment> e_0 = make_shared<Environment>();
     stack.push_back(e_0);
     control.push_back(e_0);
+    envs.push_back(e_0);
     control.insert(control.end(), controlStructures[0].begin(), controlStructures[0].end());
 
     shared_ptr<Environment> currentEnvironment = e_0;
@@ -130,9 +132,11 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                 shared_ptr<Lambda> l = dynamic_pointer_cast<Lambda>(rator);
                 shared_ptr<Environment> newEnv = make_shared<Environment>();
 
-                newEnv->setParent(currentEnvironment);
+                newEnv->setParent(envs[l->getEnv()]);
                 out << setw(8) << "New Env"
                     << ": " << newEnv->getIndex() << endl;
+
+                envs.push_back(newEnv);
 
                 int bindingCnt = l->getBindingCount();
                 auto bindings = l->getBindings();
