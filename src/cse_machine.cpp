@@ -39,14 +39,16 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
             << ": ";
         for (int i = 0; i < (int)control.size(); ++i)
         {
-            out << control[i]->toString() << (i == (int)control.size() - 1 ? "\n" : " ");
+            auto node = control[i];
+            out << (node->getType() == "String" ? ("'" + node->toString() + "'") : node->toString()) << (i == (int)control.size() - 1 ? "\n" : " ");
         }
 
         out << setw(8) << "Stack"
             << ": ";
         for (int i = stack.size() - 1; i >= 0; --i)
         {
-            out << stack[i]->toString() << (i == 0 ? "\n" : " ");
+            auto node = stack[i];
+            out << (node->getType() == "String" ? ("'" + node->toString() + "'") : node->toString()) << (i == 0 ? "\n" : " ");
         }
 
         int controlSize = control.size();
@@ -54,7 +56,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
         control.pop_back();
 
         out << setw(8) << "Next"
-            << ": " << next->toString() << endl;
+            << ": " << (next->getType() == "String" ? ("'" + next->toString() + "'") : next->toString()) << endl;
 
         // CSE Rule 1
         if (next->getType() == "Identifier")
@@ -118,6 +120,14 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                         {
                             stackUflowErr();
                         }
+
+                        shared_ptr<STNode> _g = control[control.size() - 1];
+                        if (_g->getType() != "Gamma")
+                        {
+                            cerr << "Error: Invalid application of " << rator->toString() << endl;
+                            exit(EXIT_FAILURE);
+                        }
+                        control.pop_back();
 
                         rand = stack[stack.size() - 1];
 
@@ -292,8 +302,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
 
             if (v->getType() == "Environment")
             {
-                cerr << "Error: Stack underflow." << endl;
-                exit(EXIT_FAILURE);
+                stackUflowErr();
             }
 
             if (e->getType() != "Environment")

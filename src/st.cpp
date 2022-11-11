@@ -64,7 +64,15 @@ void ST::preOrder(shared_ptr<STNode> node, int level, ostream &os) const
     {
         os << ".";
     }
-    os << *node << endl;
+
+    if (node->getType() == "String")
+    {
+        os << "'" << *node << "'" << endl;
+    }
+    else
+    {
+        os << *node << endl;
+    }
 
     if (node->getType() == "Arrow")
     {
