@@ -13,6 +13,7 @@ shared_ptr<STNode> apply(shared_ptr<Function> op, vector<shared_ptr<STNode>> ran
 void applyErr(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand);
 void applyErr(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> rand_l, shared_ptr<STNode> rand_r);
 shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env);
+void stackUflowErr();
 
 void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, ostream &out)
 {
@@ -88,12 +89,17 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
         {
             if (stack.size() < 3)
             {
-                cerr << "Error: Stack underflow." << endl;
-                exit(EXIT_FAILURE);
+                stackUflowErr();
             }
 
             shared_ptr<STNode> rator = stack[stack.size() - 1];
             shared_ptr<STNode> rand = stack[stack.size() - 2];
+
+            if (rator->getType() == "Environment" || rand->getType() == "Environment")
+            {
+                stackUflowErr();
+            }
+
             stack.pop_back();
             stack.pop_back();
 
@@ -110,11 +116,17 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                     {
                         if (stack.size() < 2)
                         {
-                            cerr << "Error: Stack underflow." << endl;
-                            exit(EXIT_FAILURE);
+                            stackUflowErr();
                         }
 
-                        rands.push_back(stack[stack.size() - 1]);
+                        rand = stack[stack.size() - 1];
+
+                        if (rand->getType() == "Environment")
+                        {
+                            stackUflowErr();
+                        }
+
+                        rands.push_back(rand);
                         stack.pop_back();
                     }
                 }
@@ -168,6 +180,12 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                             {
                                 control.pop_back();
                                 rand = stack[stack.size() - 1];
+
+                                if (rand->getType() == "Environment")
+                                {
+                                    stackUflowErr();
+                                }
+
                                 stack.pop_back();
                                 newEnv->addVariable(name, rand);
                                 out << "(" << name << " = " << rand->toString() << ")" << (i == bindingCnt - 1 ? "\n" : ", ");
@@ -272,6 +290,12 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
             shared_ptr<STNode> v = stack[stack.size() - 1];
             shared_ptr<STNode> e = stack[stack.size() - 2];
 
+            if (v->getType() == "Environment")
+            {
+                cerr << "Error: Stack underflow." << endl;
+                exit(EXIT_FAILURE);
+            }
+
             if (e->getType() != "Environment")
             {
                 cerr << "Error: Expected environment." << endl;
@@ -310,6 +334,12 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
             shared_ptr<BinaryOperator> binOp = dynamic_pointer_cast<BinaryOperator>(next);
             shared_ptr<STNode> rand_l = stack[stack.size() - 1];
             shared_ptr<STNode> rand_r = stack[stack.size() - 2];
+
+            if (rand_l->getType() == "Environment" || rand_r->getType() == "Environment")
+            {
+                stackUflowErr();
+            }
+
             stack.pop_back();
             stack.pop_back();
 
@@ -331,6 +361,12 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
 
             shared_ptr<UnaryOperator> unOp = dynamic_pointer_cast<UnaryOperator>(next);
             shared_ptr<STNode> rand = stack[stack.size() - 1];
+
+            if (rand->getType() == "Environment")
+            {
+                stackUflowErr();
+            }
+
             stack.pop_back();
 
             shared_ptr<STNode> result = apply(unOp, rand);
@@ -350,6 +386,12 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
             }
 
             shared_ptr<STNode> v = stack[stack.size() - 1];
+
+            if (v->getType() == "Environment")
+            {
+                stackUflowErr();
+            }
+
             if (v->getType() != "TruthValue")
             {
                 cerr << "Error: Expected truth value." << endl;
@@ -412,7 +454,14 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
             shared_ptr<Tuple> tuple = make_shared<Tuple>();
             for (int i = 0; i < n; ++i)
             {
-                tuple->push_back(stack[stack.size() - 1]);
+                auto elem = stack[stack.size() - 1];
+
+                if (elem->getType() == "Environment")
+                {
+                    stackUflowErr();
+                }
+
+                tuple->push_back(elem);
                 stack.pop_back();
             }
 
@@ -835,4 +884,10 @@ shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env)
     }
 
     return lookup(name, env->getParent());
+}
+
+void stackUflowErr()
+{
+    cerr << "Error: Stack underflow" << endl;
+    exit(EXIT_FAILURE);
 }
