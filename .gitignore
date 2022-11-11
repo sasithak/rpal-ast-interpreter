@@ -1,5 +1,6 @@
 .vscode
 report
 .rpal
-dist
+tests
+myrpal
 output.txt
