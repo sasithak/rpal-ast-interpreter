@@ -172,7 +172,7 @@ class Lambda : public STNode
 public:
     Lambda();
     std::shared_ptr<Lambda> getCopy() const;
-    std::string toString() const override;
+    virtual std::string toString() const override;
     std::string toCompleteString() const override;
     virtual std::string getType() const override;
     int getBindingCount() const;
@@ -295,6 +295,7 @@ public:
     std::vector<std::shared_ptr<STNode>> getArguments() const;
     int getArgumentCount() const;
     bool isComplete() const;
+    std::string toString() const override;
     std::string getType() const override;
 
 private:

@@ -830,6 +830,54 @@ bool IncompleteLambda::isComplete() const
     return argumentCount == bindingCount;
 }
 
+string IncompleteLambda::toString() const
+{
+    string s = "";
+
+    if (env >= 0)
+    {
+        s += to_string(env) + ".";
+    }
+
+    s += "lambda";
+    if (index > 0)
+        s += "_" + to_string(index);
+
+    s += "^";
+    if (bindingCount > 1)
+    {
+        s += "(";
+        for (int i = 0, j = 0; i < bindingCount; ++i, ++j)
+        {
+            s += bindings[i]->toString();
+
+            if (j < argumentCount)
+            {
+                s += "[=" + arguments[j]->toString() + "]";
+            }
+
+            if (i != bindingCount - 1)
+            {
+                s += ",";
+            }
+        }
+        s += ")";
+    }
+    else
+    {
+        if (argumentCount == 0)
+        {
+            s += bindings[0]->toString();
+        }
+        else
+        {
+            s += bindings[0]->toString() + "[=" + arguments[0]->toString() + "]";
+        }
+    }
+
+    return s;
+}
+
 string IncompleteLambda::getType() const
 {
     return "IncompleteLambda";
