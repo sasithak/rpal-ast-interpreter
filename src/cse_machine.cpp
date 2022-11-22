@@ -137,7 +137,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                 if (bindingCnt > 1)
                 {
                     // CSE Rule 11
-                    if (rand->getType() == "Tuple")
+                    if (l->isComma() && rand->getType() == "Tuple")
                     {
                         out << setw(8) << "Bindings"
                             << ": ";

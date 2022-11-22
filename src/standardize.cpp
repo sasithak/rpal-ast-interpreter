@@ -10,6 +10,7 @@ void bind_lambda(shared_ptr<Lambda> l, shared_ptr<STNode> b, shared_ptr<STNode> 
 {
     if (b->getType() == "Comma")
     {
+        l->makeComma();
         auto children = b->getChildren();
         for (auto child : children)
         {

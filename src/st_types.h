@@ -182,11 +182,14 @@ public:
     void setIndex(int index);
     int getEnv() const;
     void setEnv(int env);
+    bool isComma() const;
+    void makeComma();
 
 protected:
     int bindingCount;
     int index;
     int env;
+    bool comma;
     std::vector<std::shared_ptr<Identifier>> bindings;
 };
 

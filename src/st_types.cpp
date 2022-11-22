@@ -466,6 +466,7 @@ Lambda::Lambda()
     this->bindingCount = 0;
     this->index = 0;
     this->env = -1;
+    this->comma = false;
 }
 
 shared_ptr<Lambda> Lambda::getCopy() const
@@ -475,6 +476,7 @@ shared_ptr<Lambda> Lambda::getCopy() const
     copy->env = env;
     copy->bindingCount = bindingCount;
     copy->bindings = bindings;
+    copy->comma = comma;
     return copy;
 }
 
@@ -558,6 +560,16 @@ int Lambda::getEnv() const
 void Lambda::setEnv(int env)
 {
     this->env = env;
+}
+
+bool Lambda::isComma() const
+{
+    return comma;
+}
+
+void Lambda::makeComma()
+{
+    this->comma = true;
 }
 
 Tau::Tau(vector<shared_ptr<STNode>> children)
