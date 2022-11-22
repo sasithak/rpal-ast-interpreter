@@ -21,6 +21,7 @@ class Test : public CPPUNIT_NS::TestCase
     CPPUNIT_TEST(test_10);
     CPPUNIT_TEST(test_11);
     CPPUNIT_TEST(test_12);
+    CPPUNIT_TEST(test_13);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -98,6 +99,12 @@ protected:
     {
         system("./myrpal tests/test_12 >output 2>output");
         CPPUNIT_ASSERT(system("diff output tests/out/test_12.out") == 0);
+    }
+
+    void test_13(void)
+    {
+        system("./myrpal tests/test_13 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_13.out") == 0);
     }
 };
 
