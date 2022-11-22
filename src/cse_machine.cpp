@@ -286,6 +286,9 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                     << ": " << 12 << "\n\n";
                 continue;
             }
+
+            cerr << "Error: Illegal Function Application.\n";
+            exit(EXIT_FAILURE);
         }
 
         // CSE Rule 5
