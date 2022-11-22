@@ -137,20 +137,37 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                 if (bindingCnt > 1)
                 {
                     // CSE Rule 11
-                    if (l->isComma() && rand->getType() == "Tuple")
+                    if (l->isComma())
                     {
-                        out << setw(8) << "Bindings"
-                            << ": ";
-                        shared_ptr<Tuple> t = dynamic_pointer_cast<Tuple>(rand);
-                        for (int i = 0; i < bindingCnt; ++i)
+                        if (rand->getType() == "Tuple")
                         {
-                            string name = dynamic_pointer_cast<Identifier>(bindings[i])->getName();
-                            newEnv->addVariable(name, (*t)[i]);
-                            out << "(" << name << " = " << (*t)[i]->toString() << ")" << (i == bindingCnt - 1 ? "\n" : ", ");
-                        }
 
-                        out << setw(8) << "Rule"
-                            << ": " << 11 << "\n\n";
+                            shared_ptr<Tuple> t = dynamic_pointer_cast<Tuple>(rand);
+                            int order = t->getOrder();
+
+                            if (order != bindingCnt)
+                            {
+                                cerr << "Error: Expected " << l->getBindingCount() << " arguments but got " << order << ".\n";
+                                exit(EXIT_FAILURE);
+                            }
+
+                            out << setw(8) << "Bindings"
+                                << ": ";
+                            for (int i = 0; i < bindingCnt; ++i)
+                            {
+                                string name = dynamic_pointer_cast<Identifier>(bindings[i])->getName();
+                                newEnv->addVariable(name, (*t)[i]);
+                                out << "(" << name << " = " << (*t)[i]->toString() << ")" << (i == bindingCnt - 1 ? "\n" : ", ");
+                            }
+
+                            out << setw(8) << "Rule"
+                                << ": " << 11 << "\n\n";
+                        }
+                        else
+                        {
+                            cerr << "Error: Expected " << l->getBindingCount() << " arguments but got 1.\n";
+                            exit(EXIT_FAILURE);
+                        }
                     }
                     else
                     {
