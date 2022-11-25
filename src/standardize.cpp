@@ -202,6 +202,12 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     if (this->value == "let")
     {
+        if (children[0]->getType() != "Equal")
+        {
+            cerr << "Error: Expected 'Equal' node while standardizing 'Let' node\n";
+            exit(EXIT_FAILURE);
+        }
+
         auto children_eq = children[0]->getChildren();
         auto x = children_eq[0];
         auto e = children_eq[1];
