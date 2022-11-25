@@ -8,11 +8,36 @@
 class STNode
 {
 public:
+    /**
+     * @brief Add a children to the node
+     * @param child The child to add
+     */
     void addChild(std::shared_ptr<STNode> child);
+
+    /**
+     * @brief Get the children of the node
+     * @returns A vector containing children of the node
+     */
     std::vector<std::shared_ptr<STNode>> getChildren();
+
+    /**
+     * @brief Get the value of the node
+     * @return The value of the node as a string
+     */
     virtual std::string toString() const = 0;
+
+    /**
+     * @brief Get the value of the node
+     * @return The value of the node with formatting as a string
+     */
     virtual std::string toCompleteString() const;
+
+    /**
+     * @brief Get the type of the node
+     * @return The type of the node as a string
+     */
     virtual std::string getType() const = 0;
+
     friend std::ostream &operator<<(std::ostream &os, const STNode &node);
 
 protected:
@@ -89,12 +114,33 @@ public:
     Tuple();
     Tuple(std::vector<std::shared_ptr<STNode>> values);
     std::vector<std::shared_ptr<STNode>> getValues() const;
+
+    /**
+     * @brief Get the order of the tuple
+     * @return The order of the tuple
+     */
     int getOrder() const;
+
+    /**
+     * @brief Create a copy of the tuple
+     * @return A copy of the tuple
+     */
     std::shared_ptr<Tuple> getCopy() const;
+
     std::string toString() const override;
     std::string toCompleteString() const override;
     std::string getType() const override;
+
+    /**
+     * @brief Insert an element to the tuple
+     * @param value The element to insert
+     */
     void push_back(std::shared_ptr<STNode> value);
+
+    /**
+     * @brief Get the element at the given index
+     * @return nullptr if the index is out of range, the element at the given index otherwise
+     */
     std::shared_ptr<STNode> operator[](int index) const;
 
 private:
@@ -143,12 +189,43 @@ class Function : public STNode
 {
 public:
     Function(std::string name, int arity);
+
+    /**
+     * @brief Get the arity of the function
+     * @return The arity
+     */
     int getArity() const;
+
+    /**
+     * @brief Get the stored arguments of the function
+     * @return A vector of the stored arguments
+     */
     std::vector<std::shared_ptr<STNode>> getArguments() const;
+
+    /**
+     * @brief Store an argument
+     * @param argument The argument to store
+     */
     void addArgument(std::shared_ptr<STNode> argument);
+
+    /**
+     * @brief Get the number of arguments stored
+     * @return The number of arguments stored
+     */
     int getArgumentCount() const;
+
+    /**
+     * @brief Check if the function is fully applied
+     * @return True if the arguments count is equal to the arity, false otherwise
+     */
     bool isFull() const;
+
+    /**
+     * @brief Create a copy of the function
+     * @return A copy of the function
+     */
     std::shared_ptr<Function> getCopy() const;
+
     std::string toString() const override;
     std::string getType() const override;
 
@@ -171,18 +248,68 @@ class Lambda : public STNode
 {
 public:
     Lambda();
+
+    /**
+     * @brief Create a copy of the lambda
+     * @return A copy of the lambda
+     */
     std::shared_ptr<Lambda> getCopy() const;
+
     virtual std::string toString() const override;
     std::string toCompleteString() const override;
     virtual std::string getType() const override;
+
+    /**
+     * @brief Get the number of bindings stored
+     * @return The number of bindings
+     */
     int getBindingCount() const;
+
+    /**
+     * @brief Get the stored bindings
+     * @return A vector of the stored bindings
+     */
     std::vector<std::shared_ptr<Identifier>> getBindings() const;
+
+    /**
+     * @brief Bind an identifier to the lambda
+     * @param binding The identifier to bind
+     */
     void addBinding(std::shared_ptr<Identifier> binding);
+
+    /**
+     * @brief Get the index of the lambda
+     * @return The index
+     */
     int getIndex() const;
+
+    /**
+     * @brief Set the index of the lambda
+     * @param index The index to set
+     */
     void setIndex(int index);
+
+    /**
+     * @brief Get the environment for which lambda is bound to
+     * @return The environment
+     */
     int getEnv() const;
+
+    /**
+     * @brief Set the environment for which lambda is bound to
+     * @param env The environment to set
+     */
     void setEnv(int env);
+
+    /**
+     * @brief Check the lambda is a multi variable function defined with comma node
+     * @return true if the lambda is a multi variable function defined with comma, false otherwise
+     */
     bool isComma() const;
+
+    /**
+     * @brief Set the lambda as a multi variable function defined with comma node
+     */
     void makeComma();
 
 protected:
@@ -197,7 +324,13 @@ class Tau : public STNode
 {
 public:
     Tau(std::vector<std::shared_ptr<STNode>> children);
+
+    /**
+     * @brief Get the size of the tau
+     * @return The size
+     */
     int getSize() const;
+
     std::string toString() const override;
     std::string toCompleteString() const override;
     std::string getType() const override;
@@ -222,7 +355,17 @@ public:
     std::string toString() const override;
     std::string toCompleteString() const override;
     std::string getType() const override;
+
+    /**
+     * @brief Set the index of the delta
+     * @param index The index to set
+     */
     void setIndex(int index);
+
+    /**
+     * @brief Set the index of the delta
+     * @return The index
+     */
     int getIndex() const;
 
 private:
@@ -269,9 +412,29 @@ public:
     std::string toString() const override;
     std::string toCompleteString() const override;
     std::string getType() const override;
+
+    /**
+     * @brief Get the lambda for which eta is the fixed point
+     * @return The lambda
+     */
     std::shared_ptr<Lambda> getLambda() const;
+
+    /**
+     * @brief Get the binding count of the corresponding lambda
+     * @return The binding count
+     */
     int getBindingCount() const;
+
+    /**
+     * @brief Get the bindings of the corresponding lambda
+     * @return A vector of the bindings
+     */
     std::vector<std::shared_ptr<Identifier>> getBindings() const;
+
+    /**
+     * @brief Get the index of the corresponding lambda
+     * @return The index
+     */
     int getIndex() const;
 
 private:
@@ -294,10 +457,31 @@ class IncompleteLambda : public Lambda
 {
 public:
     IncompleteLambda(std::shared_ptr<Lambda> l);
+
+    /**
+     * @brief Add an argument to the lambda
+     * @param arg The argument to add
+     */
     void addArgument(std::shared_ptr<STNode> argument);
+
+    /**
+     * @brief Get the arguments stored
+     * @return A vector of the arguments
+     */
     std::vector<std::shared_ptr<STNode>> getArguments() const;
+
+    /**
+     * @brief Get the number of arguments stored
+     * @return The number of arguments
+     */
     int getArgumentCount() const;
+
+    /**
+     * @brief Check if the lambda is complete
+     * @return true if the number of arguments is equal to the number of bindings, false otherwise
+     */
     bool isComplete() const;
+
     std::string toString() const override;
     std::string getType() const override;
 
