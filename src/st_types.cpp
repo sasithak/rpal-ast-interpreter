@@ -466,7 +466,6 @@ Lambda::Lambda()
     this->bindingCount = 0;
     this->index = 0;
     this->env = -1;
-    this->comma = false;
 }
 
 shared_ptr<Lambda> Lambda::getCopy() const
@@ -476,7 +475,6 @@ shared_ptr<Lambda> Lambda::getCopy() const
     copy->env = env;
     copy->bindingCount = bindingCount;
     copy->bindings = bindings;
-    copy->comma = comma;
     return copy;
 }
 
@@ -560,16 +558,6 @@ int Lambda::getEnv() const
 void Lambda::setEnv(int env)
 {
     this->env = env;
-}
-
-bool Lambda::isComma() const
-{
-    return comma;
-}
-
-void Lambda::makeComma()
-{
-    this->comma = true;
 }
 
 Tau::Tau(vector<shared_ptr<STNode>> children)
@@ -810,87 +798,4 @@ string Dummy::toCompleteString() const
 string Dummy::getType() const
 {
     return "Dummy";
-}
-
-IncompleteLambda::IncompleteLambda(shared_ptr<Lambda> l)
-{
-    this->bindingCount = l->getBindingCount();
-    this->bindings = l->getBindings();
-    this->index = l->getIndex();
-    this->env = l->getEnv();
-    this->argumentCount = 0;
-}
-
-void IncompleteLambda::addArgument(shared_ptr<STNode> argument)
-{
-    arguments.push_back(argument);
-    ++argumentCount;
-}
-
-vector<shared_ptr<STNode>> IncompleteLambda::getArguments() const
-{
-    return arguments;
-}
-
-int IncompleteLambda::getArgumentCount() const
-{
-    return argumentCount;
-}
-
-bool IncompleteLambda::isComplete() const
-{
-    return argumentCount == bindingCount;
-}
-
-string IncompleteLambda::toString() const
-{
-    string s = "";
-
-    if (env >= 0)
-    {
-        s += to_string(env) + ".";
-    }
-
-    s += "lambda";
-    if (index > 0)
-        s += "_" + to_string(index);
-
-    s += "^";
-    if (bindingCount > 1)
-    {
-        s += "(";
-        for (int i = 0, j = 0; i < bindingCount; ++i, ++j)
-        {
-            s += bindings[i]->toString();
-
-            if (j < argumentCount)
-            {
-                s += "[=" + arguments[j]->toString() + "]";
-            }
-
-            if (i != bindingCount - 1)
-            {
-                s += ",";
-            }
-        }
-        s += ")";
-    }
-    else
-    {
-        if (argumentCount == 0)
-        {
-            s += bindings[0]->toString();
-        }
-        else
-        {
-            s += bindings[0]->toString() + "[=" + arguments[0]->toString() + "]";
-        }
-    }
-
-    return s;
-}
-
-string IncompleteLambda::getType() const
-{
-    return "IncompleteLambda";
 }

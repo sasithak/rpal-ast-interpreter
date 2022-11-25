@@ -137,48 +137,34 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                 if (bindingCnt > 1)
                 {
                     // CSE Rule 11
-                    if (l->isComma())
+                    if (rand->getType() == "Tuple")
                     {
-                        if (rand->getType() == "Tuple")
+
+                        shared_ptr<Tuple> t = dynamic_pointer_cast<Tuple>(rand);
+                        int order = t->getOrder();
+
+                        if (order != bindingCnt)
                         {
-
-                            shared_ptr<Tuple> t = dynamic_pointer_cast<Tuple>(rand);
-                            int order = t->getOrder();
-
-                            if (order != bindingCnt)
-                            {
-                                cerr << "Error: Expected " << l->getBindingCount() << " arguments but got " << order << ".\n";
-                                exit(EXIT_FAILURE);
-                            }
-
-                            out << setw(8) << "Bindings"
-                                << ": ";
-                            for (int i = 0; i < bindingCnt; ++i)
-                            {
-                                string name = dynamic_pointer_cast<Identifier>(bindings[i])->getName();
-                                newEnv->addVariable(name, (*t)[i]);
-                                out << "(" << name << " = " << (*t)[i]->toString() << ")" << (i == bindingCnt - 1 ? "\n" : ", ");
-                            }
-
-                            out << setw(8) << "Rule"
-                                << ": " << 11 << "\n\n";
-                        }
-                        else
-                        {
-                            cerr << "Error: Expected " << l->getBindingCount() << " arguments but got 1.\n";
+                            cerr << "Error: Expected " << l->getBindingCount() << " arguments but got " << order << ".\n";
                             exit(EXIT_FAILURE);
                         }
+
+                        out << setw(8) << "Bindings"
+                            << ": ";
+                        for (int i = 0; i < bindingCnt; ++i)
+                        {
+                            string name = dynamic_pointer_cast<Identifier>(bindings[i])->getName();
+                            newEnv->addVariable(name, (*t)[i]);
+                            out << "(" << name << " = " << (*t)[i]->toString() << ")" << (i == bindingCnt - 1 ? "\n" : ", ");
+                        }
+
+                        out << setw(8) << "Rule"
+                            << ": " << 11 << "\n\n";
                     }
                     else
                     {
-                        // CSE Rule 3
-                        shared_ptr<IncompleteLambda> il = make_shared<IncompleteLambda>(l);
-                        il->addArgument(rand);
-                        stack.push_back(il);
-
-                        out << setw(8) << "Rule"
-                            << ": " << 3 << "\n\n";
-                        continue;
+                        cerr << "Error: Expected " << l->getBindingCount() << " arguments but got 1.\n";
+                        exit(EXIT_FAILURE);
                     }
                 }
                 else
@@ -198,49 +184,6 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, os
                 stack.push_back(newEnv);
                 vector<shared_ptr<STNode>> _delta = controlStructures[l->getIndex()];
                 control.insert(control.end(), _delta.begin(), _delta.end());
-                continue;
-            }
-
-            // CSE Rule 3 & CSE Rule 4
-            if (rator->getType() == "IncompleteLambda")
-            {
-                shared_ptr<IncompleteLambda> il = dynamic_pointer_cast<IncompleteLambda>(rator);
-                il->addArgument(rand);
-
-                if (il->isComplete())
-                {
-                    // CSE Rule 4
-                    shared_ptr<Environment> newEnv = make_shared<Environment>();
-                    newEnv->setParent(envs[il->getEnv()]);
-                    envs.push_back(newEnv);
-
-                    out << setw(8) << "Bindings"
-                        << ": ";
-
-                    auto arguments = il->getArguments();
-                    for (int i = 0; i < il->getBindingCount(); ++i)
-                    {
-                        string name = dynamic_pointer_cast<Identifier>(il->getBindings()[i])->getName();
-                        newEnv->addVariable(name, arguments[i]);
-                        out << "(" << name << " = " << arguments[i]->toString() << ")" << (i == il->getBindingCount() - 1 ? "\n" : ", ");
-                    }
-
-                    currentEnvironment = newEnv;
-                    control.push_back(newEnv);
-                    stack.push_back(newEnv);
-                    vector<shared_ptr<STNode>> _delta = controlStructures[il->getIndex()];
-                    control.insert(control.end(), _delta.begin(), _delta.end());
-
-                    out << setw(8) << "Rule"
-                        << ": " << 4 << "\n\n";
-                }
-                else
-                {
-                    // CSE Rule 3
-                    out << setw(8) << "Rule"
-                        << ": " << 3 << "\n\n";
-                    stack.push_back(il);
-                }
                 continue;
             }
 

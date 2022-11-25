@@ -6,24 +6,8 @@
 
 using namespace std;
 
-void bind_lambda(shared_ptr<Lambda> l, shared_ptr<STNode> b, shared_ptr<STNode> p)
-{
-    if (b->getType() == "Comma")
-    {
-        l->makeComma();
-        auto children = b->getChildren();
-        for (auto child : children)
-        {
-            l->addBinding(dynamic_pointer_cast<Identifier>(child));
-        }
-    }
-    else
-    {
-        l->addBinding(dynamic_pointer_cast<Identifier>(b));
-    }
-
-    l->addChild(p);
-}
+void bind_lambda(shared_ptr<Lambda> l, shared_ptr<STNode> b, shared_ptr<STNode> p);
+void bind_lambda(shared_ptr<Lambda> l, vector<shared_ptr<STNode>> toBind, int startIndex);
 
 shared_ptr<ST> AST::standardize() const
 {
@@ -102,15 +86,10 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     if (this->value == "function_form")
     {
-        int childrenCnt = children.size();
         auto p = children[0];
-        auto e = children[childrenCnt - 1];
 
         shared_ptr<Lambda> l = make_shared<Lambda>();
-        for (int i = 1; i < childrenCnt - 1; ++i)
-        {
-            bind_lambda(l, children[i], e);
-        }
+        bind_lambda(l, children, 1);
 
         shared_ptr<Equal> eq = make_shared<Equal>();
         eq->addChild(p);
@@ -124,10 +103,7 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
         auto e = children[childrenCnt - 1];
         shared_ptr<Lambda> l = make_shared<Lambda>();
         l->addChild(e);
-        for (int i = 0; i < childrenCnt - 1; ++i)
-        {
-            l->addBinding(dynamic_pointer_cast<Identifier>(children[i]));
-        }
+        bind_lambda(l, children, 0);
         return l;
     }
 
@@ -269,4 +245,61 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     cerr << "Unknown node type: " << this->value << "\n";
     exit(EXIT_FAILURE);
+}
+
+void bind_lambda(shared_ptr<Lambda> l, shared_ptr<STNode> b, shared_ptr<STNode> p)
+{
+    if (b->getType() == "Comma")
+    {
+        auto children = b->getChildren();
+        for (auto child : children)
+        {
+            l->addBinding(dynamic_pointer_cast<Identifier>(child));
+        }
+    }
+    else
+    {
+        l->addBinding(dynamic_pointer_cast<Identifier>(b));
+    }
+
+    l->addChild(p);
+}
+
+void bind_lambda(shared_ptr<Lambda> l, vector<shared_ptr<STNode>> toBind, int startIndex)
+{
+    int toBindSize = toBind.size();
+
+    if (startIndex == 1 && toBindSize == 3)
+    {
+        auto b = toBind[1];
+        auto e = toBind[2];
+        auto children = b->getChildren();
+        bind_lambda(l, b, e);
+    }
+    else if (startIndex == 0 && toBindSize == 2)
+    {
+        auto b = toBind[0];
+        auto e = toBind[1];
+        bind_lambda(l, b, e);
+    }
+    else
+    {
+        shared_ptr<Lambda> w = l;
+        for (int i = startIndex; i < toBindSize - 1; ++i)
+        {
+            auto b = toBind[i];
+
+            if (i == toBindSize - 2)
+            {
+                auto p = toBind[toBindSize - 1];
+                bind_lambda(w, b, p);
+            }
+            else
+            {
+                auto p = make_shared<Lambda>();
+                bind_lambda(w, b, p);
+                w = p;
+            }
+        }
+    }
 }

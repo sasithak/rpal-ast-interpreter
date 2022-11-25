@@ -301,22 +301,10 @@ public:
      */
     void setEnv(int env);
 
-    /**
-     * @brief Check the lambda is a multi variable function defined with comma node
-     * @return true if the lambda is a multi variable function defined with comma, false otherwise
-     */
-    bool isComma() const;
-
-    /**
-     * @brief Set the lambda as a multi variable function defined with comma node
-     */
-    void makeComma();
-
 protected:
     int bindingCount;
     int index;
     int env;
-    bool comma;
     std::vector<std::shared_ptr<Identifier>> bindings;
 };
 
@@ -451,43 +439,6 @@ public:
 
 private:
     std::string value;
-};
-
-class IncompleteLambda : public Lambda
-{
-public:
-    IncompleteLambda(std::shared_ptr<Lambda> l);
-
-    /**
-     * @brief Add an argument to the lambda
-     * @param arg The argument to add
-     */
-    void addArgument(std::shared_ptr<STNode> argument);
-
-    /**
-     * @brief Get the arguments stored
-     * @return A vector of the arguments
-     */
-    std::vector<std::shared_ptr<STNode>> getArguments() const;
-
-    /**
-     * @brief Get the number of arguments stored
-     * @return The number of arguments
-     */
-    int getArgumentCount() const;
-
-    /**
-     * @brief Check if the lambda is complete
-     * @return true if the number of arguments is equal to the number of bindings, false otherwise
-     */
-    bool isComplete() const;
-
-    std::string toString() const override;
-    std::string getType() const override;
-
-private:
-    std::vector<std::shared_ptr<STNode>> arguments;
-    int argumentCount;
 };
 
 #endif // ST_TYPES_H
