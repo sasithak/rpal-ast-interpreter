@@ -8,6 +8,7 @@ using namespace std;
 
 void bind_lambda(shared_ptr<Lambda> l, shared_ptr<STNode> b, shared_ptr<STNode> p);
 void bind_lambda(shared_ptr<Lambda> l, vector<shared_ptr<STNode>> toBind, int startIndex);
+void checkChildrenCount(string nodeStr, int expected, int given);
 
 shared_ptr<ST> AST::standardize() const
 {
@@ -61,16 +62,19 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     if (isUnOp(this->value))
     {
+        checkChildrenCount(this->value, 1, children.size());
         return make_shared<UnaryOperator>(this->value, children[0]);
     }
 
     if (isBinOp(this->value))
     {
+        checkChildrenCount(this->value, 2, children.size());
         return make_shared<BinaryOperator>(this->value, children[0], children[1]);
     }
 
     if (this->value == "->")
     {
+        checkChildrenCount("Arrow", 3, children.size());
         vector<shared_ptr<STNode>> newChildren;
         newChildren.push_back(make_shared<Delta>(children[1]));
         newChildren.push_back(make_shared<Delta>(children[2]));
@@ -86,6 +90,12 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     if (this->value == "function_form")
     {
+        if ((int)children.size() < 3)
+        {
+            cerr << "Function form must have at least 3 children";
+            exit(EXIT_FAILURE);
+        }
+
         auto p = children[0];
 
         shared_ptr<Lambda> l = make_shared<Lambda>();
@@ -99,10 +109,15 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     if (this->value == "lambda")
     {
+        if ((int)children.size() < 2)
+        {
+            cerr << "Lambda must have at least 2 children";
+            exit(EXIT_FAILURE);
+        }
+
         int childrenCnt = children.size();
         auto e = children[childrenCnt - 1];
         shared_ptr<Lambda> l = make_shared<Lambda>();
-        l->addChild(e);
         bind_lambda(l, children, 0);
         return l;
     }
@@ -131,6 +146,7 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     if (this->value == "@")
     {
+        checkChildrenCount("@", 3, children.size());
         shared_ptr<Gamma> g_1 = make_shared<Gamma>();
         shared_ptr<Gamma> g_2 = make_shared<Gamma>();
         g_2->addChild(children[1]);
@@ -142,6 +158,8 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     if (this->value == "rec")
     {
+        checkChildrenCount("Rec", 1, children.size());
+
         if (children[0]->getType() != "Equal")
         {
             cerr << "Error: Expected 'Equal' node while standardizing 'Rec' node\n";
@@ -168,6 +186,8 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     if (this->value == "within")
     {
+        checkChildrenCount("Within", 2, children.size());
+
         if (children[0]->getType() != "Equal" || children[1]->getType() != "Equal")
         {
             cerr << "Error: Expected two 'Equal' nodes while standardizing 'Within' node\n";
@@ -197,6 +217,8 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     if (this->value == "where")
     {
+        checkChildrenCount("Where", 2, children.size());
+
         if (children[1]->getType() != "Equal")
         {
             cerr << "Error: Expected 'Equal' node while standardizing 'Where' node\n";
@@ -220,6 +242,8 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     if (this->value == "let")
     {
+        checkChildrenCount("Let", 2, children.size());
+
         if (children[0]->getType() != "Equal")
         {
             cerr << "Error: Expected 'Equal' node while standardizing 'Let' node\n";
@@ -243,6 +267,7 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     if (this->value == "gamma")
     {
+        checkChildrenCount("Gamma", 2, children.size());
         shared_ptr<Gamma> g = make_shared<Gamma>();
         g->addChild(children[0]);
         g->addChild(children[1]);
@@ -261,6 +286,7 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     if (this->value == "=")
     {
+        checkChildrenCount("Equal", 2, children.size());
         shared_ptr<Equal> eq = make_shared<Equal>();
         eq->addChild(children[0]);
         eq->addChild(children[1]);
@@ -325,5 +351,14 @@ void bind_lambda(shared_ptr<Lambda> l, vector<shared_ptr<STNode>> toBind, int st
                 w = p;
             }
         }
+    }
+}
+
+void checkChildrenCount(string nodeStr, int expected, int given)
+{
+    if (expected != given)
+    {
+        cerr << "Error: Expected " << expected << " children for node '" << nodeStr << "', got " << given << "\n";
+        exit(EXIT_FAILURE);
     }
 }
