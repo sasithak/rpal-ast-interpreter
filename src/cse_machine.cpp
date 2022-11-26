@@ -591,6 +591,10 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         {
             return *dynamic_pointer_cast<Integer>(rand_l) > dynamic_pointer_cast<Integer>(rand_r);
         }
+        else if (rand_l->getType() == "String" && rand_r->getType() == "String")
+        {
+            return *dynamic_pointer_cast<String>(rand_l) > dynamic_pointer_cast<String>(rand_r);
+        }
         else
         {
             applyErr(binOp, rand_l, rand_r);
@@ -602,6 +606,10 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         if (rand_l->getType() == "Integer" && rand_r->getType() == "Integer")
         {
             return *dynamic_pointer_cast<Integer>(rand_l) < dynamic_pointer_cast<Integer>(rand_r);
+        }
+        else if (rand_l->getType() == "String" && rand_r->getType() == "String")
+        {
+            return *dynamic_pointer_cast<String>(rand_l) < dynamic_pointer_cast<String>(rand_r);
         }
         else
         {
@@ -615,6 +623,10 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         {
             return *dynamic_pointer_cast<Integer>(rand_l) >= dynamic_pointer_cast<Integer>(rand_r);
         }
+        else if (rand_l->getType() == "String" && rand_r->getType() == "String")
+        {
+            return *dynamic_pointer_cast<String>(rand_l) >= dynamic_pointer_cast<String>(rand_r);
+        }
         else
         {
             applyErr(binOp, rand_l, rand_r);
@@ -626,6 +638,10 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
         if (rand_l->getType() == "Integer" && rand_r->getType() == "Integer")
         {
             return *dynamic_pointer_cast<Integer>(rand_l) <= dynamic_pointer_cast<Integer>(rand_r);
+        }
+        else if (rand_l->getType() == "String" && rand_r->getType() == "String")
+        {
+            return *dynamic_pointer_cast<String>(rand_l) <= dynamic_pointer_cast<String>(rand_r);
         }
         else
         {

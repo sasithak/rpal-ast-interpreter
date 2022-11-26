@@ -213,6 +213,26 @@ shared_ptr<TruthValue> String::operator!=(shared_ptr<String> other) const
     return make_shared<TruthValue>(value != other->getValue());
 }
 
+shared_ptr<TruthValue> String::operator<(shared_ptr<String> other) const
+{
+    return make_shared<TruthValue>(value.compare(other->getValue()) < 0);
+}
+
+shared_ptr<TruthValue> String::operator<=(shared_ptr<String> other) const
+{
+    return make_shared<TruthValue>(value.compare(other->getValue()) <= 0);
+}
+
+shared_ptr<TruthValue> String::operator>(shared_ptr<String> other) const
+{
+    return make_shared<TruthValue>(value.compare(other->getValue()) > 0);
+}
+
+shared_ptr<TruthValue> String::operator>=(shared_ptr<String> other) const
+{
+    return make_shared<TruthValue>(value.compare(other->getValue()) >= 0);
+}
+
 shared_ptr<String> String::operator+(shared_ptr<String> other) const
 {
     return make_shared<String>(value + other->getValue());

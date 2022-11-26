@@ -100,6 +100,10 @@ public:
     std::string getType() const override;
     std::shared_ptr<TruthValue> operator==(std::shared_ptr<String> other) const;
     std::shared_ptr<TruthValue> operator!=(std::shared_ptr<String> other) const;
+    std::shared_ptr<TruthValue> operator<(std::shared_ptr<String> other) const;
+    std::shared_ptr<TruthValue> operator<=(std::shared_ptr<String> other) const;
+    std::shared_ptr<TruthValue> operator>(std::shared_ptr<String> other) const;
+    std::shared_ptr<TruthValue> operator>=(std::shared_ptr<String> other) const;
     std::shared_ptr<String> operator+(std::shared_ptr<String> other) const;
     std::shared_ptr<String> stem() const;
     std::shared_ptr<String> stern() const;
