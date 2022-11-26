@@ -6,8 +6,5 @@ clean:
 	rm -f test
 	rm -f output
 
-check:
-	make && python3 run_tests.py
-
 test:
 	g++ runTests.cpp -lcppunit -o test && ./test
