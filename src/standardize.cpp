@@ -142,6 +142,12 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     if (this->value == "rec")
     {
+        if (children[0]->getType() != "Equal")
+        {
+            cerr << "Error: Expected 'Equal' node while standardizing 'Rec' node\n";
+            exit(EXIT_FAILURE);
+        }
+
         auto child_children = children[0]->getChildren();
         auto x = child_children[0];
         auto e = child_children[1];
@@ -162,6 +168,12 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     if (this->value == "within")
     {
+        if (children[0]->getType() != "Equal" || children[1]->getType() != "Equal")
+        {
+            cerr << "Error: Expected two 'Equal' nodes while standardizing 'Within' node\n";
+            exit(EXIT_FAILURE);
+        }
+
         auto children_1 = children[0]->getChildren();
         auto x_1 = children_1[0];
         auto e_1 = children_1[1];
@@ -185,6 +197,12 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
     if (this->value == "where")
     {
+        if (children[1]->getType() != "Equal")
+        {
+            cerr << "Error: Expected 'Equal' node while standardizing 'Where' node\n";
+            exit(EXIT_FAILURE);
+        }
+
         auto p = children[0];
         auto children_eq = children[1]->getChildren();
         auto x = children_eq[0];
