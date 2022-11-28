@@ -132,6 +132,12 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
         for (auto child : children)
         {
+            if (child->getType() != "Equal")
+            {
+                cerr << "Error: Expected 'Equal' node while standardizing 'Rec' node\n";
+                exit(EXIT_FAILURE);
+            }
+
             auto child_children = child->getChildren();
             comma->addChild(child_children[0]);
             e_s.push_back(child_children[1]);
@@ -304,12 +310,22 @@ void bind_lambda(shared_ptr<Lambda> l, shared_ptr<STNode> b, shared_ptr<STNode> 
         auto children = b->getChildren();
         for (auto child : children)
         {
+            if (child->getType() != "Identifier")
+            {
+                cerr << "Error: Expected 'Identifier' node while binding lambda.\n";
+                exit(EXIT_FAILURE);
+            }
             l->addBinding(dynamic_pointer_cast<Identifier>(child));
         }
     }
-    else
+    else if (b->getType() == "Identifier")
     {
         l->addBinding(dynamic_pointer_cast<Identifier>(b));
+    }
+    else
+    {
+        cerr << "Error: Expected 'Comma' or 'Identifier' node while binding Lambda\n";
+        exit(EXIT_FAILURE);
     }
 
     l->addChild(p);
