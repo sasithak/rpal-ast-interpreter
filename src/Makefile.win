@@ -1,5 +1,2 @@
-msvc:
+all:
     cl.exe /EHsc main.cpp ast.cpp standardize.cpp st.cpp st_types.cpp cse_machine.cpp operators.cpp environment.cpp /Femyrpal.exe
-
-mingw:
-    g++.exe -Wall -Wextra -g main.cpp ast.cpp standardize.cpp st.cpp st_types.cpp cse_machine.cpp operators.cpp environment.cpp -o myrpal.exe
