@@ -28,7 +28,7 @@ shared_ptr<STNode> Environment::getVariable(string key) const
 {
     if (bindings.find(key) == bindings.end())
     {
-        return nullptr;
+        return nullptr; // identifier not found
     }
 
     return bindings.at(key);
@@ -38,7 +38,7 @@ bool Environment::addVariable(string key, shared_ptr<STNode> value)
 {
     if (bindings.find(key) != bindings.end())
     {
-        return false;
+        return false; // identifier already exists
     }
     bindings[key] = value;
     return true;
@@ -66,6 +66,7 @@ string Environment::getType() const
 
 void setupPrimitiveEnvironment(unordered_map<string, shared_ptr<STNode>> &primitiveEnvironment)
 {
+    // insert the built-in functions to the primitive environment
     primitiveEnvironment.insert({"Print", make_shared<Function>("Print", 1)});
     primitiveEnvironment.insert({"Stern", make_shared<Function>("Stern", 1)});
     primitiveEnvironment.insert({"Stem", make_shared<Function>("Stem", 1)});
@@ -84,14 +85,14 @@ shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env)
 {
     if (env == nullptr)
     {
-        return nullptr;
+        return nullptr; // identifier not found
     }
 
     shared_ptr<STNode> val = env->getVariable(name);
     if (val != nullptr)
     {
-        return val;
+        return val; // identifier found in env
     }
 
-    return lookup(name, env->getParent());
+    return lookup(name, env->getParent()); // identifier not found in env, look in parent
 }
