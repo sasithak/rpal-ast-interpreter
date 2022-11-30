@@ -6,8 +6,22 @@
 
 using namespace std;
 
+/**
+ * @brief Bind the variables of a lambda
+ * @param l The lambda to bind
+ * @param b The identifier or comma node to bind
+ * @param v The value to bind
+ */
 void bind_lambda(shared_ptr<Lambda> l, shared_ptr<STNode> b, shared_ptr<STNode> p);
+
+/**
+ * @brief Bind the variables of a lambda
+ * @param l The lambda to bind
+ * @param toBind The vector of identifiers or comma nodes to bind; the last element is the value to bind
+ * @param startIndex The index to start binding from
+ */
 void bind_lambda(shared_ptr<Lambda> l, vector<shared_ptr<STNode>> toBind, int startIndex);
+
 void checkChildrenCount(string nodeStr, int expected, int given);
 
 shared_ptr<ST> AST::standardize() const
@@ -25,10 +39,11 @@ shared_ptr<STNode> AST::postOrder(shared_ptr<ASTNode> node, int level) const
     vector<shared_ptr<STNode>> children;
     for (auto child : node->children)
     {
+        // recursively standardize the children
         children.push_back(postOrder(child, level + 1));
     }
 
-    return node->standardize(children);
+    return node->standardize(children); // standardize the node
 }
 
 shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) const
@@ -76,8 +91,8 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
     {
         checkChildrenCount("Arrow", 3, children.size());
         vector<shared_ptr<STNode>> newChildren;
-        newChildren.push_back(make_shared<Delta>(children[1]));
-        newChildren.push_back(make_shared<Delta>(children[2]));
+        newChildren.push_back(make_shared<Delta>(children[1])); // delta_then
+        newChildren.push_back(make_shared<Delta>(children[2])); // delta_else
         newChildren.push_back(make_shared<Beta>());
         newChildren.push_back(children[0]);
         return make_shared<Arrow>(newChildren);
@@ -99,7 +114,7 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
         auto p = children[0];
 
         shared_ptr<Lambda> l = make_shared<Lambda>();
-        bind_lambda(l, children, 1);
+        bind_lambda(l, children, 1); // bind the identifiers and comma nodes to the lambda
 
         shared_ptr<Equal> eq = make_shared<Equal>();
         eq->addChild(p);
@@ -115,10 +130,8 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
             exit(EXIT_FAILURE);
         }
 
-        int childrenCnt = children.size();
-        auto e = children[childrenCnt - 1];
         shared_ptr<Lambda> l = make_shared<Lambda>();
-        bind_lambda(l, children, 0);
+        bind_lambda(l, children, 0); // bind the identifiers and comma nodes to the lambda
         return l;
     }
 
@@ -132,6 +145,7 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
 
         for (auto child : children)
         {
+            // iterate through each identifier and value pair
             if (child->getType() != "Equal")
             {
                 cerr << "Error: Expected 'Equal' node while standardizing 'Rec' node\n";
@@ -139,11 +153,11 @@ shared_ptr<STNode> ASTNode::standardize(vector<shared_ptr<STNode>> children) con
             }
 
             auto child_children = child->getChildren();
-            comma->addChild(child_children[0]);
-            e_s.push_back(child_children[1]);
+            comma->addChild(child_children[0]); // add the identifier to the comma node
+            e_s.push_back(child_children[1]);   // add the value to the tau node
         }
 
-        shared_ptr<Tau> t = make_shared<Tau>(e_s);
+        shared_ptr<Tau> t = make_shared<Tau>(e_s); // create the tau node
 
         eq->addChild(comma);
         eq->addChild(t);
@@ -307,6 +321,7 @@ void bind_lambda(shared_ptr<Lambda> l, shared_ptr<STNode> b, shared_ptr<STNode> 
 {
     if (b->getType() == "Comma")
     {
+        // bind all the identifiers in the comma node to the lambda node
         auto children = b->getChildren();
         for (auto child : children)
         {
@@ -320,6 +335,7 @@ void bind_lambda(shared_ptr<Lambda> l, shared_ptr<STNode> b, shared_ptr<STNode> 
     }
     else if (b->getType() == "Identifier")
     {
+        // bind the identifier to the lambda node
         l->addBinding(dynamic_pointer_cast<Identifier>(b));
     }
     else
@@ -339,7 +355,6 @@ void bind_lambda(shared_ptr<Lambda> l, vector<shared_ptr<STNode>> toBind, int st
     {
         auto b = toBind[1];
         auto e = toBind[2];
-        auto children = b->getChildren();
         bind_lambda(l, b, e);
     }
     else if (startIndex == 0 && toBindSize == 2)
@@ -353,18 +368,22 @@ void bind_lambda(shared_ptr<Lambda> l, vector<shared_ptr<STNode>> toBind, int st
         shared_ptr<Lambda> w = l;
         for (int i = startIndex; i < toBindSize - 1; ++i)
         {
+            // iterate through all the identifiers and comma nodes create the tree of lambdas, binding those identifiers
+
             auto b = toBind[i];
 
             if (i == toBindSize - 2)
             {
+                // bind the value to the last lambda
                 auto p = toBind[toBindSize - 1];
                 bind_lambda(w, b, p);
             }
             else
             {
+                // if not the last identifier or comma node, create a new lambda node and bind the identifier(s) to it
                 auto p = make_shared<Lambda>();
                 bind_lambda(w, b, p);
-                w = p;
+                w = p; // set the current lambda node to the new lambda node to continue building the tree
             }
         }
     }
