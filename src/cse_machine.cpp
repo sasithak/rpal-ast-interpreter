@@ -12,7 +12,6 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
 shared_ptr<STNode> apply(shared_ptr<Function> op, shared_ptr<STNode> rand);
 void applyErr(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand);
 void applyErr(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> rand_l, shared_ptr<STNode> rand_r);
-shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env);
 void stackUflowErr();
 
 void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, ostream &out)
@@ -886,22 +885,6 @@ void applyErr(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand)
 void applyErr(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> rand_l, shared_ptr<STNode> rand_r)
 {
     cerr << "Error: Operator " << binOp->toString() << " is not defined for " << rand_l->getType() << " and " << rand_r->getType() << "\n";
-}
-
-shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env)
-{
-    if (env == nullptr)
-    {
-        return nullptr;
-    }
-
-    shared_ptr<STNode> val = env->getVariable(name);
-    if (val != nullptr)
-    {
-        return val;
-    }
-
-    return lookup(name, env->getParent());
 }
 
 void stackUflowErr()

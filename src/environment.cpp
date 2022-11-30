@@ -15,7 +15,7 @@ Environment::Environment()
     if (this->index == 0)
     {
         this->parent = nullptr;
-        getPrimitiveEnvironment(this->bindings);
+        setupPrimitiveEnvironment(this->bindings);
     }
 }
 
@@ -64,7 +64,7 @@ string Environment::getType() const
     return "Environment";
 }
 
-void getPrimitiveEnvironment(unordered_map<string, shared_ptr<STNode>> &primitiveEnvironment)
+void setupPrimitiveEnvironment(unordered_map<string, shared_ptr<STNode>> &primitiveEnvironment)
 {
     primitiveEnvironment.insert({"Print", make_shared<Function>("Print", 1)});
     primitiveEnvironment.insert({"Stern", make_shared<Function>("Stern", 1)});
@@ -78,4 +78,20 @@ void getPrimitiveEnvironment(unordered_map<string, shared_ptr<STNode>> &primitiv
     primitiveEnvironment.insert({"Isfunction", make_shared<Function>("Isfunction", 1)});
     primitiveEnvironment.insert({"Istuple", make_shared<Function>("Istuple", 1)});
     primitiveEnvironment.insert({"Isdummy", make_shared<Function>("Isdummy", 1)});
+}
+
+shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env)
+{
+    if (env == nullptr)
+    {
+        return nullptr;
+    }
+
+    shared_ptr<STNode> val = env->getVariable(name);
+    if (val != nullptr)
+    {
+        return val;
+    }
+
+    return lookup(name, env->getParent());
 }
