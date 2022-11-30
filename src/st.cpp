@@ -10,7 +10,7 @@ ST::ST(shared_ptr<STNode> root)
     this->root = root;
 }
 
-void ST::execute(ostream &out)
+void ST::execute(bool printCS, bool printExe)
 {
     vector<vector<shared_ptr<STNode>>> controlStructures;
     vector<shared_ptr<Delta>> deltas;
@@ -30,18 +30,21 @@ void ST::execute(ostream &out)
     int width = 6 + to_string(controlStructures.size()).length();
     for (int i = 0; i < (int)controlStructures.size(); ++i)
     {
-        out << right << setw(width) << ("delta_" + to_string(i)) << left << ": ";
+        if (printCS)
+            cout << right << setw(width) << ("delta_" + to_string(i)) << left << ": ";
         int ith_size = controlStructures[i].size();
         for (int j = 0; j < (int)controlStructures[i].size(); ++j)
         {
             shared_ptr<STNode> node = controlStructures[i][j];
-            out << (node->getType() == "String" ? "'" + node->toString() + "'" : node->toString())
-                << (j == ith_size - 1 ? "\n" : " ");
+            if (printCS)
+                cout << (node->getType() == "String" ? "'" + node->toString() + "'" : node->toString())
+                     << (j == ith_size - 1 ? "\n" : " ");
         }
     }
-    out << "\n";
+    if (printCS)
+        cout << "\n";
 
-    runCSEMachine(controlStructures, out);
+    runCSEMachine(controlStructures, printExe);
 }
 
 ostream &operator<<(ostream &os, const ST &st)

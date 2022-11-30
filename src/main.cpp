@@ -17,28 +17,55 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (argc > 2)
+    if (argc > 6)
     {
         cerr << "Too many arguments\n";
         return 1;
     }
 
-    string filename(argv[1]);
+    bool printAST = false;
+    bool printST = false;
+    bool printCS = false;
+    bool printExe = false;
+
+    for (int i = 1; i < argc - 1; ++i)
+    {
+        string arg = argv[i];
+        if (arg == "-ast")
+        {
+            printAST = true;
+        }
+        else if (arg == "-st")
+        {
+            printST = true;
+        }
+        else if (arg == "-cs")
+        {
+            printCS = true;
+        }
+        else if (arg == "-exe")
+        {
+            printExe = true;
+        }
+        else
+        {
+            cerr << "Invalid argument: " << arg << "\n";
+            return 1;
+        }
+    }
+
+    string filename(argv[argc - 1]);
     vector<string> tokens = getTokens(filename);
 
-    ofstream out("output.txt");
-
     shared_ptr<AST> ast = AST::createAST(tokens);
-    out << *ast;
-    out << "\n";
+    if (printAST)
+        cout << *ast << "\n";
 
     shared_ptr<ST> st = ast->standardize();
-    out << *st;
-    out << "\n";
+    if (printST)
+        cout << *st << "\n";
 
-    st->execute(out);
-
-    out.close();
+    st->execute(printCS, printExe);
     return 0;
 }
 

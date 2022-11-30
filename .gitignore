@@ -2,6 +2,6 @@
 report
 .rpal
 myrpal
-output.txt
+exec.txt
 output
 test

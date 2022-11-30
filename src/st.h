@@ -13,8 +13,10 @@ public:
 
     /**
      * @brief Generate the control structures and start the execution of the CSE Machine
+     * @param printCS Whether to print the control structures
+     * @param printExe Whether to print the execution of the CSE Machine
      */
-    void execute(std::ostream &out);
+    void execute(bool printCS, bool printExe);
 
     /**
      * @brief Print the ST to stdout
@@ -29,8 +31,9 @@ private:
     /**
      * @brief Run the CSE machine according to the CSE Rules
      * @param controlStructures A 2D vector containing the control structures
+     * @param printExe Whether to print the execution of the CSE Machine
      */
-    void runCSEMachine(std::vector<std::vector<std::shared_ptr<STNode>>> &controlStructures, std::ostream &out);
+    void runCSEMachine(std::vector<std::vector<std::shared_ptr<STNode>>> &controlStructures, bool printExe);
 
     /**
      * @brief Traverse the ST in preorder and print the tree
