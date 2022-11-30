@@ -12,39 +12,42 @@ ST::ST(shared_ptr<STNode> root)
 
 void ST::execute(bool printCS, bool printExe)
 {
-    vector<vector<shared_ptr<STNode>>> controlStructures;
-    vector<shared_ptr<Delta>> deltas;
+    vector<vector<shared_ptr<STNode>>> controlStructures; // stores the control structures
+    vector<shared_ptr<Delta>> deltas;                     // stores the deltas
 
-    shared_ptr<Delta> delta = make_shared<Delta>(0, root);
+    shared_ptr<Delta> delta = make_shared<Delta>(0, root); // create the initial delta
     deltas.push_back(delta);
 
     int i = 0;
     while (i < (int)deltas.size())
     {
+        // iterate through the deltas
         vector<shared_ptr<STNode>> controlStructure;
+
+        // go in preorder through the subtree referenced by the delta and generate the control structures
         preOrder(deltas[i]->getChildren()[0], controlStructure, deltas);
         controlStructures.push_back(controlStructure);
         ++i;
     }
 
-    int width = 6 + to_string(controlStructures.size()).length();
-    for (int i = 0; i < (int)controlStructures.size(); ++i)
+    if (printCS)
     {
-        if (printCS)
-            cout << right << setw(width) << ("delta_" + to_string(i)) << left << ": ";
-        int ith_size = controlStructures[i].size();
-        for (int j = 0; j < (int)controlStructures[i].size(); ++j)
+        int width = 6 + to_string(controlStructures.size()).length();
+        for (int i = 0; i < (int)controlStructures.size(); ++i)
         {
-            shared_ptr<STNode> node = controlStructures[i][j];
-            if (printCS)
+            cout << right << setw(width) << ("delta_" + to_string(i)) << left << ": ";
+            int ith_size = controlStructures[i].size();
+            for (int j = 0; j < (int)controlStructures[i].size(); ++j)
+            {
+                shared_ptr<STNode> node = controlStructures[i][j];
                 cout << (node->getType() == "String" ? "'" + node->toString() + "'" : node->toString())
                      << (j == ith_size - 1 ? "\n" : " ");
+            }
         }
-    }
-    if (printCS)
         cout << "\n";
+    }
 
-    runCSEMachine(controlStructures, printExe);
+    runCSEMachine(controlStructures, printExe); // run the CSE machine with the control structures
 }
 
 ostream &operator<<(ostream &os, const ST &st)
@@ -123,24 +126,25 @@ void ST::preOrder(shared_ptr<STNode> node, vector<shared_ptr<STNode>> &controlSt
 
     bool expandChildren = true;
     string nodeType = node->getType();
-    if (nodeType != "Arrow")
+    if (nodeType != "Arrow") // skip the arrow node
     {
         if (nodeType == "Lambda")
         {
             dynamic_pointer_cast<Lambda>(node)->setIndex(deltas.size());
-            shared_ptr<Delta> delta = make_shared<Delta>((int)deltas.size(), node->getChildren()[0]);
+            shared_ptr<Delta> delta = make_shared<Delta>((int)deltas.size(), node->getChildren()[0]); // create a new delta for the right child of lambda
             deltas.push_back(delta);
-            expandChildren = false;
+            expandChildren = false; // skip traversing through the children of lambda; they will be traversed through the new delta
         }
 
         else if (nodeType == "Delta")
         {
+            // delta_then or delta_else of arrow node
             dynamic_pointer_cast<Delta>(node)->setIndex(deltas.size());
             deltas.push_back(dynamic_pointer_cast<Delta>(node));
-            expandChildren = false;
+            expandChildren = false; // skip traversing through the children of delta; they will be traversed later
         }
 
-        controlStructure.push_back(node);
+        controlStructure.push_back(node); // add the node to the control structure
     }
 
     if (expandChildren)
