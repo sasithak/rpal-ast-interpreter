@@ -20,7 +20,7 @@ public:
     /**
      * @brief Get the value of a variable
      * @param key The name of the identifier
-     * @return The value bound to the identifier
+     * @return nullptr if the identifier was not found, otherwise the value
      */
     std::shared_ptr<STNode> getVariable(std::string key) const;
 
