@@ -6,7 +6,18 @@
 
 using namespace std;
 
+/**
+ * @brief Get the tokens from the input file
+ * @param filename The name of the input file
+ * @return A vector of tokens
+ */
 vector<string> getTokens(string filename);
+
+/**
+ * @brief Remove the trailing spaces from a string
+ * @param str The string to remove the leading and trailing spaces from
+ * @return The string without leading and trailing spaces
+ */
 string trim(const string &str);
 
 int main(int argc, char *argv[])
@@ -80,6 +91,7 @@ vector<string> getTokens(string filename)
         exit(EXIT_FAILURE);
     }
 
+    // Read the file line by line
     for (string line; getline(_file, line);)
         content.push_back(trim(line));
 
@@ -89,10 +101,12 @@ vector<string> getTokens(string filename)
 
 string trim(const string &str)
 {
+    // Remove the leading spaces
     const auto strBegin = str.find_first_not_of(" ");
     if (strBegin == string::npos)
         return ""; // no content
 
+    // Remove the trailing spaces
     const auto strEnd = str.find_last_not_of(" ");
     const auto strRange = strEnd - strBegin + 1;
 
