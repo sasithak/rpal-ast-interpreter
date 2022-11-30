@@ -6,6 +6,11 @@
 
 using namespace std;
 
+/**
+ * @brief Return the level of a token from the number of preceding dots
+ * @param str The token to check
+ * @return The level of the token
+ */
 int getLevel(string str)
 {
     int level = 0;
@@ -23,6 +28,12 @@ int getLevel(string str)
     return level;
 }
 
+/**
+ * @brief Get the type of a token
+ * @param str The token to check
+ * @param level The level of the token
+ * @return A pair of type and value
+ */
 pair<Type, string> getType(string str, int level)
 {
     str = str.substr(level, str.length() - level);
@@ -109,6 +120,7 @@ shared_ptr<AST> AST::createAST(vector<string> tokens)
 
         if (i == 0)
         {
+            // Root node
             node->parent = node;
             ast->root = node;
             currentParent = ast->root;
@@ -118,19 +130,23 @@ shared_ptr<AST> AST::createAST(vector<string> tokens)
 
         if (level == currentLevel + 1)
         {
+            // A child of the previous node
             currentLevel = level;
             if (ast->size > 1)
-                currentParent = currentParent.lock()->children.back();
+                currentParent = currentParent.lock()->children.back(); // Get the previous node from its parent
         }
         else if (level < currentLevel)
         {
+            // A sibling of a previous node
             for (int j = 0; j < currentLevel - level; j++)
             {
+                // traverse up the tree to the correct level
                 currentParent = currentParent.lock()->parent;
             }
             currentLevel = level;
         }
 
+        // Add the node to the tree
         node->parent = currentParent;
         currentParent.lock()->addChild(node);
         ++ast->size;
