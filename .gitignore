@@ -9,8 +9,8 @@ output
 
 # build
 myrpal
-.exe
-.obj
+*.exe
+*.obj
 
 # testing
 test
