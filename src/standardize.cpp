@@ -368,8 +368,7 @@ void bind_lambda(shared_ptr<Lambda> l, vector<shared_ptr<STNode>> toBind, int st
         shared_ptr<Lambda> w = l;
         for (int i = startIndex; i < toBindSize - 1; ++i)
         {
-            // iterate through all the identifiers and comma nodes create the tree of lambdas, binding those identifiers
-
+            // iterate through all the identifiers and comma nodes creating the tree of lambdas binding those identifiers
             auto b = toBind[i];
 
             if (i == toBindSize - 2)
