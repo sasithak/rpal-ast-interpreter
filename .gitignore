@@ -1,7 +1,16 @@
+# folders
 .vscode
 report
+
+# files
 .rpal
-myrpal
 exec.txt
 output
+
+# build
+myrpal
+.exe
+.obj
+
+# testing
 test
