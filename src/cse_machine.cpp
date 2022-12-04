@@ -8,11 +8,49 @@
 
 using namespace std;
 
+/**
+ * @brief Apply an unary operator to a value
+ * @param unOp The operator
+ * @param value The value
+ * @return The result of the operation
+ */
 shared_ptr<STNode> apply(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand);
+
+/**
+ * @brief Apply a binary operator to two values
+ * @param binOp The operator
+ * @param rand_l The left operand
+ * @param rand_r The right operand
+ * @return The result of the operation
+ */
 shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> rand_l, shared_ptr<STNode> rand_r);
+
+/**
+ * @brief Apply a built-in function
+ * @param terOp The function
+ * @param rand The argument
+ * @return The result of the operation if the all arguments for the function is available, @p rand bounded function otherwise
+ */
 shared_ptr<STNode> apply(shared_ptr<Function> op, shared_ptr<STNode> rand);
+
+/**
+ * @brief Print an error message and exit if operand is not compatible with the unary operator
+ * @param unOp The operator
+ * @param operand The operand
+ */
 void applyErr(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand);
+
+/**
+ * @brief Print an error message and exit if operands are not compatible with the binary operator
+ * @param binOp The operator
+ * @param rand_l The left operand
+ * @param rand_r The right operand
+ */
 void applyErr(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> rand_l, shared_ptr<STNode> rand_r);
+
+/**
+ * @brief Print stack underflow error message and exit
+ */
 void stackUflowErr();
 
 void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, bool printExe)
@@ -141,7 +179,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, bo
                 continue;
             }
 
-            // CSE Rule 3 & CSE Rule 4 & CSE Rule 11
+            // CSE Rule 4 & CSE Rule 11
             if (rator->getType() == "Lambda")
             {
                 shared_ptr<Lambda> l = dynamic_pointer_cast<Lambda>(rator);  // lambda node
@@ -244,7 +282,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, bo
                 continue;
             }
 
-            // CSE Rule 11
+            // CSE Rule 12
             if (rator->getType() == "YStar")
             {
                 if (rand->getType() != "Lambda")
@@ -264,7 +302,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, bo
                 continue;
             }
 
-            // CSE Rule 12
+            // CSE Rule 13
             if (rator->getType() == "Eta")
             {
                 shared_ptr<Eta> e = dynamic_pointer_cast<Eta>(rator);
