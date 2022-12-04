@@ -355,7 +355,7 @@ public:
     void setIndex(int index);
 
     /**
-     * @brief Set the index of the delta
+     * @brief Get the index of the delta
      * @return The index
      */
     int getIndex() const;
