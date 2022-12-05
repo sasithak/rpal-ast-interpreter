@@ -25,6 +25,21 @@ class Test : public CPPUNIT_NS::TestCase
     CPPUNIT_TEST(test_14);
     CPPUNIT_TEST(test_15);
     CPPUNIT_TEST(test_16);
+    CPPUNIT_TEST(test_17);
+    CPPUNIT_TEST(test_18);
+    CPPUNIT_TEST(test_19);
+    CPPUNIT_TEST(test_20);
+    CPPUNIT_TEST(test_21);
+    CPPUNIT_TEST(test_22);
+    CPPUNIT_TEST(test_23);
+    CPPUNIT_TEST(test_24);
+    CPPUNIT_TEST(test_25);
+    CPPUNIT_TEST(test_26);
+    CPPUNIT_TEST(test_27);
+    CPPUNIT_TEST(test_28);
+    CPPUNIT_TEST(test_29);
+    CPPUNIT_TEST(test_30);
+    CPPUNIT_TEST(test_31);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -126,6 +141,96 @@ protected:
     {
         system("./myrpal tests/test_16 >output 2>output");
         CPPUNIT_ASSERT(system("diff output tests/out/test_16.out") == 0);
+    }
+
+    void test_17(void)
+    {
+        system("./myrpal tests/test_17 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_17.out") == 0);
+    }
+
+    void test_18(void)
+    {
+        system("./myrpal tests/test_18 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_18.out") == 0);
+    }
+
+    void test_19(void)
+    {
+        system("./myrpal tests/test_19 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_19.out") == 0);
+    }
+
+    void test_20(void)
+    {
+        system("./myrpal tests/test_20 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_20.out") == 0);
+    }
+
+    void test_21(void)
+    {
+        system("./myrpal tests/test_21 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_21.out") == 0);
+    }
+
+    void test_22(void)
+    {
+        system("./myrpal tests/test_22 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_22.out") == 0);
+    }
+
+    void test_23(void)
+    {
+        system("./myrpal tests/test_23 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_23.out") == 0);
+    }
+
+    void test_24(void)
+    {
+        system("./myrpal tests/test_24 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_24.out") == 0);
+    }
+
+    void test_25(void)
+    {
+        system("./myrpal tests/test_25 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_25.out") == 0);
+    }
+
+    void test_26(void)
+    {
+        system("./myrpal tests/test_26 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_26.out") == 0);
+    }
+
+    void test_27(void)
+    {
+        system("./myrpal tests/test_27 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_27.out") == 0);
+    }
+
+    void test_28(void)
+    {
+        system("./myrpal tests/test_28 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_28.out") == 0);
+    }
+
+    void test_29(void)
+    {
+        system("./myrpal tests/test_29 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_29.out") == 0);
+    }
+
+    void test_30(void)
+    {
+        system("./myrpal tests/test_30 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_30.out") == 0);
+    }
+
+    void test_31(void)
+    {
+        system("./myrpal tests/test_31 >output 2>output");
+        CPPUNIT_ASSERT(system("diff output tests/out/test_31.out") == 0);
     }
 };
 
