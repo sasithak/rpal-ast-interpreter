@@ -5,6 +5,7 @@ clean:
 	rm -f myrpal
 	rm -f test
 	rm -f output
+	rm -f exec.txt
 
 test:
 	g++ runTests.cpp -lcppunit -o test && ./test
