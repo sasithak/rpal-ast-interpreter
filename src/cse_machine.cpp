@@ -799,9 +799,9 @@ shared_ptr<STNode> apply(shared_ptr<Function> op, shared_ptr<STNode> rand)
 
     if (opStr == "Print")
     {
-        string randStr = rands[0]->toString();
-        cout << randStr << "\n"; // Print the value of the argument
-        return make_shared<Dummy>(randStr);
+        rands[0]->print(); // Print the value of the argument
+        cout << "\n";
+        return make_shared<Dummy>();
     }
 
     if (opStr == "Stern")

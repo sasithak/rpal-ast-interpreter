@@ -22,6 +22,11 @@ string STNode::toCompleteString() const
     return toString();
 }
 
+void STNode::print() const
+{
+    cout << *this;
+}
+
 ostream &operator<<(ostream &os, const STNode &node)
 {
     os << node.toString();
@@ -203,6 +208,46 @@ string String::getType() const
     return "String";
 }
 
+void String::print() const
+{
+    bool backslash = false;
+    for (char c : value)
+    {
+        if (backslash)
+        {
+            // Correctly print escaped characters
+            switch (c)
+            {
+            case 'n':
+                cout << endl;
+                break;
+            case 't':
+                cout << '\t';
+                break;
+            case '\\':
+                cout << '\\';
+                break;
+            default:
+                cout << c;
+                break;
+            }
+            backslash = false;
+        }
+        else
+        {
+            if (c == '\\')
+            {
+                // Escape character
+                backslash = true;
+            }
+            else
+            {
+                cout << c;
+            }
+        }
+    }
+}
+
 shared_ptr<TruthValue> String::operator==(shared_ptr<String> other) const
 {
     return make_shared<TruthValue>(value == other->getValue());
@@ -334,6 +379,26 @@ string Tuple::toCompleteString() const
 string Tuple::getType() const
 {
     return "Tuple";
+}
+
+void Tuple::print() const
+{
+    if (size == 0)
+    {
+        cout << "nil";
+        return;
+    }
+
+    cout << "(";
+    for (int i = 0; i < size; ++i)
+    {
+        values[i]->print();
+        if (i != size - 1)
+        {
+            cout << ", ";
+        }
+    }
+    cout << ")";
 }
 
 void Tuple::push_back(shared_ptr<STNode> value)
@@ -542,6 +607,16 @@ string Lambda::toCompleteString() const
 string Lambda::getType() const
 {
     return "Lambda";
+}
+
+void Lambda::print() const
+{
+    cout << "[lambda closure: ";
+    for (int i = 0; i < bindingCount; ++i)
+    {
+        cout << bindings[i]->toString() << (i != bindingCount - 1 ? ", " : ": ");
+    }
+    cout << index << "]";
 }
 
 int Lambda::getBindingCount() const
@@ -800,17 +875,11 @@ int Eta::getIndex() const
     return l->getIndex();
 }
 
-Dummy::Dummy(string value)
+Dummy::Dummy()
 {
-    this->value = value;
 }
 
 string Dummy::toString() const
-{
-    return "dummy_" + value;
-}
-
-string Dummy::toCompleteString() const
 {
     return "dummy";
 }

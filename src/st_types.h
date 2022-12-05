@@ -38,6 +38,11 @@ public:
      */
     virtual std::string getType() const = 0;
 
+    /**
+     * @brief Prints the node for the 'Print' function
+     */
+    virtual void print() const;
+
     friend std::ostream &operator<<(std::ostream &os, const STNode &node);
 
 protected:
@@ -98,6 +103,7 @@ public:
     std::string toString() const override;
     std::string toCompleteString() const override;
     std::string getType() const override;
+    void print() const override;
     std::shared_ptr<TruthValue> operator==(std::shared_ptr<String> other) const;
     std::shared_ptr<TruthValue> operator!=(std::shared_ptr<String> other) const;
     std::shared_ptr<TruthValue> operator<(std::shared_ptr<String> other) const;
@@ -134,6 +140,7 @@ public:
     std::string toString() const override;
     std::string toCompleteString() const override;
     std::string getType() const override;
+    void print() const override;
 
     /**
      * @brief Insert an element to the tuple
@@ -262,6 +269,7 @@ public:
     virtual std::string toString() const override;
     std::string toCompleteString() const override;
     virtual std::string getType() const override;
+    virtual void print() const override;
 
     /**
      * @brief Get the number of bindings stored
@@ -436,13 +444,9 @@ private:
 class Dummy : public STNode
 {
 public:
-    Dummy(std::string value);
+    Dummy();
     std::string toString() const override;
-    std::string toCompleteString() const override;
     std::string getType() const override;
-
-private:
-    std::string value;
 };
 
 #endif // ST_TYPES_H
