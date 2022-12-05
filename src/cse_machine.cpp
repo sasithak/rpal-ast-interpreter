@@ -777,26 +777,6 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
             exit(EXIT_FAILURE);
         }
     }
-    else if (binOpStr == "neq")
-    {
-        if (rand_l->getType() == "Integer" && rand_r->getType() == "Integer")
-        {
-            return *dynamic_pointer_cast<Integer>(rand_l) != dynamic_pointer_cast<Integer>(rand_r);
-        }
-        else if (rand_l->getType() == "TruthValue" && rand_r->getType() == "TruthValue")
-        {
-            return *dynamic_pointer_cast<TruthValue>(rand_l) != dynamic_pointer_cast<TruthValue>(rand_r);
-        }
-        else if (rand_l->getType() == "String" && rand_r->getType() == "String")
-        {
-            return *dynamic_pointer_cast<String>(rand_l) != dynamic_pointer_cast<String>(rand_r);
-        }
-        else
-        {
-            applyErr(binOp, rand_l, rand_r);
-            exit(EXIT_FAILURE);
-        }
-    }
     else
     {
         cerr << "Error: Unknown binary operator " << binOpStr << "\n";
