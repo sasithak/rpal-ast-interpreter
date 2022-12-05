@@ -11,7 +11,7 @@ using namespace std;
 /**
  * @brief Apply an unary operator to a value
  * @param unOp The operator
- * @param value The value
+ * @param rand The value
  * @return The result of the operation
  */
 shared_ptr<STNode> apply(shared_ptr<UnaryOperator> unOp, shared_ptr<STNode> rand);
@@ -27,9 +27,9 @@ shared_ptr<STNode> apply(shared_ptr<BinaryOperator> binOp, shared_ptr<STNode> ra
 
 /**
  * @brief Apply a built-in function
- * @param terOp The function
+ * @param op The function
  * @param rand The argument
- * @return The result of the operation if the all arguments for the function is available, @p rand bounded function otherwise
+ * @return The result of the application if all the arguments for the function is available, @p rand bounded function otherwise
  */
 shared_ptr<STNode> apply(shared_ptr<Function> op, shared_ptr<STNode> rand);
 
