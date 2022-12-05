@@ -612,11 +612,24 @@ string Lambda::getType() const
 void Lambda::print() const
 {
     cout << "[lambda closure: ";
-    for (int i = 0; i < bindingCount; ++i)
+    if (bindingCount > 1)
     {
-        cout << bindings[i]->toString() << (i != bindingCount - 1 ? ", " : ": ");
+        cout << "(";
+        for (int i = 0; i < bindingCount; ++i)
+        {
+            bindings[i]->print();
+            if (i != bindingCount - 1)
+            {
+                cout << ", ";
+            }
+        }
+        cout << ")";
     }
-    cout << index << "]";
+    else
+    {
+        bindings[0]->print();
+    }
+    cout << ": " << index << "]";
 }
 
 int Lambda::getBindingCount() const
