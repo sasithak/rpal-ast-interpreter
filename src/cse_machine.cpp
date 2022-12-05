@@ -943,6 +943,19 @@ shared_ptr<STNode> apply(shared_ptr<Function> op, shared_ptr<STNode> rand)
         }
     }
 
+    if (opStr == "ItoS")
+    {
+        if (rands[0]->getType() == "Integer")
+        {
+            return make_shared<String>(to_string(dynamic_pointer_cast<Integer>(rands[0])->getValue()));
+        }
+        else
+        {
+            cerr << "ItoS: Argument is not an integer\n";
+            exit(EXIT_FAILURE);
+        }
+    }
+
     cerr << "Error: Unknown function " << opStr << "\n";
     exit(EXIT_FAILURE);
 }

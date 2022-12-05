@@ -79,6 +79,7 @@ void setupPrimitiveEnvironment(unordered_map<string, shared_ptr<STNode>> &primit
     primitiveEnvironment.insert({"Isfunction", make_shared<Function>("Isfunction", 1)});
     primitiveEnvironment.insert({"Istuple", make_shared<Function>("Istuple", 1)});
     primitiveEnvironment.insert({"Isdummy", make_shared<Function>("Isdummy", 1)});
+    primitiveEnvironment.insert({"ItoS", make_shared<Function>("ItoS", 1)});
 }
 
 shared_ptr<STNode> lookup(string name, shared_ptr<Environment> env)
