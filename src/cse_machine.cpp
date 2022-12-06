@@ -298,7 +298,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, bo
                 stack.push_back(e);                      // Push the eta node to the stack
                 if (printExe)
                     out << setw(8) << "Rule"
-                        << ": " << 11 << "\n\n";
+                        << ": " << 12 << "\n\n";
                 continue;
             }
 
@@ -315,7 +315,7 @@ void ST::runCSEMachine(vector<vector<shared_ptr<STNode>>> &controlStructures, bo
                 control.push_back(make_shared<Gamma>()); // Push a gamma node to the control to apply rand
                 if (printExe)
                     out << setw(8) << "Rule"
-                        << ": " << 12 << "\n\n";
+                        << ": " << 13 << "\n\n";
                 continue;
             }
 
