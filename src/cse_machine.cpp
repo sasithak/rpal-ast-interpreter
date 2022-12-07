@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <string>
 #include "environment.h"
 #include "operators.h"
 #include "st.h"
