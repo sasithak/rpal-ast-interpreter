@@ -79,7 +79,7 @@ Following commandline arguments are allowed before the filename:
 
 ## Testing
 
-Sample RPAL programs are provided in the test directory. The `CppTest` library is used to run tests. It can be installed on Ubuntu using the following command:
+Sample RPAL programs are provided in the `test` directory. The `CppTest` library is used to run tests. It can be installed on Ubuntu using the following command:
 
 ```
 sudo apt-get install libcppunit-dev
